@@ -1,9 +1,5 @@
-/* purgecss start ignore */
 @tailwind base;
-/* purgecss end ignore */
 @tailwind components;
 @tailwind utilities;
 
-/* purgecss start ignore */
 @import "node_modules/antd/dist/antd.css";
-/* purgecss end ignore */
