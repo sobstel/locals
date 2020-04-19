@@ -26,7 +26,7 @@ export default () => {
 
   return (
     <div>
-      <Layout style={{ width: 800, margin: "10px auto" }}>
+      <Layout style={{ maxWidth: 800, margin: "10px auto" }}>
         <Content>
           {data.length == 0 && (
             <Alert message="Ładowanie produktów..." type="warning" />
