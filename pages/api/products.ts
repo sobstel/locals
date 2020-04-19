@@ -2,11 +2,6 @@ import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
 
-type GroupedProducts = {
-  name: string;
-  products: { name: string; price: number }[];
-}[];
-
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
   const sheets = google.sheets("v4");
