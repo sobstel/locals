@@ -1,6 +1,12 @@
-// TODO
-
-export const brands = {
-  id: "niebanalna",
-  // 'spreadsheet: id, range
+const brands = {
+  niebanalna: {
+    spreadsheet: {
+      id: "1cmIgHjj2sUlPy81U8Dr0FPCSXjux-LXqyOCHCmC2FjI",
+      range: "B36:C",
+    },
+  },
 };
+
+export function getBrand(id) {
+  return brands[id];
+}
