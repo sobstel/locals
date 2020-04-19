@@ -1,7 +1,7 @@
 import * as R from "remeda";
 import { useEffect } from "react";
-import { Collapse, List } from "antd";
-import { PlusCircleTwoTone } from "@ant-design/icons";
+import { Button, Collapse, List } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./shared/Loading";
 
@@ -20,6 +20,9 @@ export default function Products() {
       dispatch({ type: "FETCH_PRODUCTS" });
     }
   }, [dispatch]);
+
+  // TODO: how to useCallback for a loop?
+  const addProduct = (product) => dispatch({ type: "ADD_PRODUCT", product });
 
   if (loading) {
     return <Loading message="Trwa ładowanie produktów..." />;
@@ -43,7 +46,14 @@ export default function Products() {
               renderItem={(item) => (
                 <List.Item
                   actions={[
-                    <PlusCircleTwoTone key="add" className="tw-text-xl" />,
+                    <Button
+                      key="add"
+                      type="primary"
+                      shape="circle"
+                      size="large"
+                      icon={<PlusOutlined />}
+                      onClick={() => addProduct(item)}
+                    />,
                   ]}
                 >
                   <List.Item.Meta title={item.name} />
