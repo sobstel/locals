@@ -1,29 +1,9 @@
-import { useRouter } from "next/router";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import configureStore from "../store/configureStore";
-import { BrandProvider } from "../BrandContext";
+import dynamic from "next/dynamic";
 
-import App from "../components/App";
+const App = dynamic(() => import("../components/App"), {
+  ssr: false,
+});
 
-export default () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const brandId = id as string;
-
-  if (!brandId) return null;
-
-  const { store, persistor } = configureStore(brandId);
-
-  return (
-    <div>
-      <BrandProvider value={brandId}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <App />
-          </PersistGate>
-        </Provider>
-      </BrandProvider>
-    </div>
-  );
-};
+export default function () {
+  return <App />;
+}

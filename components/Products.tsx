@@ -1,14 +1,12 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Button, Collapse, List } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import BrandContext from "../BrandContext";
 import Loading from "./shared/Loading";
 
 const { Panel } = Collapse;
 
 export default function Products() {
-  const brandId = useContext(BrandContext);
   const dispatch = useDispatch();
   const groupedProducts: GroupedProducts = useSelector(
     (state) => state.products.groupedProducts
@@ -18,7 +16,7 @@ export default function Products() {
   useEffect(() => {
     // TODO: how to reload products? as they remembered by redux-persist
     if (!groupedProducts || groupedProducts.length === 0) {
-      dispatch({ type: "FETCH_PRODUCTS", brandId });
+      dispatch({ type: "FETCH_PRODUCTS" });
     }
   }, [dispatch]);
 

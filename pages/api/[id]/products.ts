@@ -1,13 +1,13 @@
 import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
-import { getBrand } from "../../../config";
+import { getBrand } from "../../../config/getBrand";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
 
-  const brand = getBrand(req.query.id);
+  const brand = getBrand(req.query.id as string);
 
   const sheets = google.sheets("v4");
   const result = await sheets.spreadsheets.values.get({

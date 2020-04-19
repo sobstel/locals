@@ -7,6 +7,4 @@ const brands = {
   },
 };
 
-export function getBrand(id) {
-  return brands[id];
-}
+export default brands;

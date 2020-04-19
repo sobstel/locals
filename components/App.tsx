@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, Menu } from "antd";
-// import BrandContext from "../BrandContext";
 
-import Products from "../components/Products";
-import Basket from "../components/Basket";
+import withStore from "./withStore";
+import Products from "./Products";
+import Basket from "./Basket";
 
 const MENU_ITEMS = {
   products: { name: "Produkty", component: Products },
@@ -13,8 +13,7 @@ const MENU_ITEMS = {
 
 const { Content, Header } = Layout;
 
-export default function App() {
-  // const brandId = useContext(BrandContext);
+function App() {
   const dispatch = useDispatch();
   const activeMenuItemKey = useSelector(
     (state) => state.core.activeMenuItemKey
@@ -48,3 +47,5 @@ export default function App() {
     </Layout>
   );
 }
+
+export default withStore(App);
