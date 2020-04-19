@@ -1,15 +1,7 @@
-import {
-  Form,
-  Select,
-  InputNumber,
-  DatePicker,
-  Switch,
-  Slider,
-  Button,
-} from 'antd'
+import { Form, Select, InputNumber, Switch, Slider, Button } from "antd";
 
-const FormItem = Form.Item
-const Option = Select.Option
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 export default () => (
   <div style={{ marginTop: 100 }}>
@@ -54,13 +46,6 @@ export default () => (
         </Select>
       </FormItem>
 
-      <FormItem
-        label="DatePicker"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 8 }}
-      >
-        <DatePicker name="startDate" />
-      </FormItem>
       <FormItem style={{ marginTop: 48 }} wrapperCol={{ span: 8, offset: 8 }}>
         <Button size="large" type="primary" htmlType="submit">
           OK
@@ -71,4 +56,4 @@ export default () => (
       </FormItem>
     </Form>
   </div>
-)
+);
