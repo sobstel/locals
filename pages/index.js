@@ -32,7 +32,7 @@ export default () => {
             <Alert message="Ładowanie produktów..." type="warning" />
           )}
           {data.length > 0 && (
-            <Collapse defaultActiveKey={["1"]}>
+            <Collapse defaultActiveKey={[data.group[0].name]}>
               {data.map((group) => (
                 <Panel key={group.name} header={group.name}>
                   <List
