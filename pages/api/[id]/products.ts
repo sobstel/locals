@@ -1,16 +1,19 @@
 import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
+import { getBrand } from "../../../config";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
 
+  const brand = getBrand(req.query.id);
+
   const sheets = google.sheets("v4");
   const result = await sheets.spreadsheets.values.get({
     auth: process.env.GOOGLE_API_KEY,
-    spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-    range: process.env.GOOGLE_SPREADSHEET_RANGE,
+    spreadsheetId: brand.spreadsheet.id,
+    range: brand.spreadsheet.range,
   });
 
   const rows = result.data.values as string[][];
