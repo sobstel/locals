@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, Collapse, Divider, Layout, List, Skeleton } from "antd";
+import { Alert, Collapse, Layout, List, Menu, Skeleton } from "antd";
+import { PlusCircleTwoTone } from "@ant-design/icons";
 
-const { Content } = Layout;
+const { Content, Header } = Layout;
 const { Panel } = Collapse;
-
-// import { Form, Select, InputNumber, Switch, Slider, Button } from "antd";
-
-// const FormItem = Form.Item;
-// const Option = Select.Option;
 
 export default () => {
   const [data, setData] = useState([]);
@@ -21,24 +17,34 @@ export default () => {
     fetchData();
   }, []);
 
-  if (data) {
-  }
-
   return (
     <div>
-      <Layout style={{ maxWidth: 800, margin: "10px auto" }}>
+      <Layout style={{ maxWidth: 800, margin: "auto" }}>
+        <Header>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+            <Menu.Item key="1">Produkty</Menu.Item>
+            <Menu.Item key="2">Koszyk</Menu.Item>
+          </Menu>
+        </Header>
         <Content>
           {data.length == 0 && (
             <Alert message="Ładowanie produktów..." type="warning" />
           )}
           {data.length > 0 && (
-            <Collapse defaultActiveKey={[data[0].name]}>
+            <Collapse accordion defaultActiveKey={[data[0].name]}>
               {data.map((group) => (
                 <Panel key={group.name} header={group.name}>
                   <List
                     dataSource={group.products}
                     renderItem={(item) => (
-                      <List.Item>
+                      <List.Item
+                        actions={[
+                          <PlusCircleTwoTone
+                            key="add"
+                            style={{ fontSize: 16 }}
+                          />,
+                        ]}
+                      >
                         <Skeleton title={false} loading={false}>
                           <List.Item.Meta title={item.name} />
                           <div>{item.price.toFixed(2)} zł</div>
