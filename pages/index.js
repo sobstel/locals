@@ -1,59 +1,57 @@
-import { Form, Select, InputNumber, Switch, Slider, Button } from "antd";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Alert, Collapse, Divider, Layout, List, Skeleton } from "antd";
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+const { Content } = Layout;
+const { Panel } = Collapse;
 
-export default () => (
-  <div style={{ marginTop: 100 }}>
-    <Form layout="horizontal">
-      <FormItem
-        label="Input Number"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 8 }}
-      >
-        <InputNumber
-          size="large"
-          min={1}
-          max={10}
-          style={{ width: 100 }}
-          defaultValue={3}
-          name="inputNumber"
-        />
-        <a href="#">Link</a>
-      </FormItem>
+// import { Form, Select, InputNumber, Switch, Slider, Button } from "antd";
 
-      <FormItem label="Switch" labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
-        <Switch defaultChecked name="switch" />
-      </FormItem>
+// const FormItem = Form.Item;
+// const Option = Select.Option;
 
-      <FormItem label="Slider" labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
-        <Slider defaultValue={70} />
-      </FormItem>
+export default () => {
+  const [data, setData] = useState([]);
 
-      <FormItem label="Select" labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
-        <Select
-          size="large"
-          defaultValue="lucy"
-          style={{ width: 192 }}
-          name="select"
-        >
-          <Option value="jack">jack</Option>
-          <Option value="lucy">lucy</Option>
-          <Option value="disabled" disabled>
-            disabled
-          </Option>
-          <Option value="yiminghe">yiminghe</Option>
-        </Select>
-      </FormItem>
+  useEffect(() => {
+    async function fetchData() {
+      const result = await axios("/api/products");
+      setData(result.data);
+    }
+    fetchData();
+  }, []);
 
-      <FormItem style={{ marginTop: 48 }} wrapperCol={{ span: 8, offset: 8 }}>
-        <Button size="large" type="primary" htmlType="submit">
-          OK
-        </Button>
-        <Button size="large" style={{ marginLeft: 8 }}>
-          Cancel
-        </Button>
-      </FormItem>
-    </Form>
-  </div>
-);
+  if (data) {
+  }
+
+  return (
+    <div>
+      <Layout style={{ width: 800, margin: "auto" }}>
+        <Content>
+          {data.length == 0 && (
+            <Alert message="Ładowanie produktów..." type="warning" />
+          )}
+          {data.length > 0 && (
+            <Collapse defaultActiveKey={["1"]}>
+              {data.map((group) => (
+                <Panel key={group.name} header={group.name}>
+                  <List
+                    dataSource={group.products}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <Skeleton title={false} loading={false}>
+                          <List.Item.Meta title={item.name} />
+                          <div>{item.price.toFixed(2)} zł</div>
+                        </Skeleton>
+                      </List.Item>
+                    )}
+                  />
+                </Panel>
+              ))}
+            </Collapse>
+          )}
+        </Content>
+      </Layout>
+    </div>
+  );
+};
