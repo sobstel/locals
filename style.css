@@ -3,3 +3,7 @@
 /* purgecss end ignore */
 @tailwind components;
 @tailwind utilities;
+
+/* purgecss ignore */
+@import "node_modules/antd/dist/antd.css";
+/* purgecss enable */
