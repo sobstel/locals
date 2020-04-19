@@ -1,7 +1,7 @@
 type Action = { type: "NAVIGATE_TO"; menuItemKey: string };
 
 const INITIAL_STATE = {
-  activeMenuItemKey: "basket",
+  activeMenuItemKey: "products",
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

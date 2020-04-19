@@ -2,21 +2,21 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, Menu } from "antd";
 
-import ProductsList from "../components/ProductList";
+import Products from "../components/Products";
 import Basket from "../components/Basket";
 
 const MENU_ITEMS = {
-  products: { name: "Produkty", component: ProductsList },
+  products: { name: "Produkty", component: Products },
   basket: { name: "Koszyk", component: Basket },
 };
 
 const { Content, Header } = Layout;
 
 export default function App() {
+  const dispatch = useDispatch();
   const activeMenuItemKey = useSelector(
     (state) => state.core.activeMenuItemKey
   );
-  const dispatch = useDispatch();
   const navigateTo = useCallback(
     ({ key }) => dispatch({ type: "NAVIGATE_TO", menuItemKey: key }),
     [dispatch]

@@ -4,6 +4,8 @@ import { google } from "googleapis";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
+
   const sheets = google.sheets("v4");
   const result = await sheets.spreadsheets.values.get({
     auth: process.env.GOOGLE_API_KEY,

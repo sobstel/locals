@@ -9,7 +9,10 @@ import rootSaga from "./sagas";
 const sagaMiddleware = createSagaMiddleware();
 const middlewares = compose(applyMiddleware(sagaMiddleware));
 
-const persistedReducer = persistReducer({ key: "root", storage }, rootReducer);
+const persistedReducer = persistReducer(
+  { key: "root", storage, blacklist: [] },
+  rootReducer
+);
 
 export default () => {
   const store = createStore(persistedReducer, middlewares);

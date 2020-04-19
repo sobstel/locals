@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
 
-import basket from "./basket";
 import core from "./core";
+import basket from "./basket";
+import loading from "./loading";
+import products from "./products";
 
-export default combineReducers({ basket, core });
+export default combineReducers({ core, products, basket, loading });
