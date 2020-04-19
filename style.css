@@ -4,6 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* purgecss ignore */
+/* purgecss start ignore */
 @import "node_modules/antd/dist/antd.css";
-/* purgecss enable */
+/* purgecss end ignore */
