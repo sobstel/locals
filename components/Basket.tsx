@@ -1,9 +1,49 @@
-import { Alert } from "antd";
+import { Button, Table } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Basket() {
+  const dispatch = useDispatch();
+  const onPublishClick = () => {
+    dispatch({ type: "CREATE_ORDER" });
+  };
+
+  const items = useSelector((state: any) => state.basket.items);
+
+  const dataSource = (items || []).map((item) => ({
+    ...item,
+    total: `${(item.price * item.count).toFixed(2)} zł`,
+    price: `${item.price.toFixed(2)} zł`,
+  }));
+
+  const columns = [
+    {
+      title: "Nazwa",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Ilość",
+      dataIndex: "count",
+      key: "count",
+    },
+    {
+      title: "Cena jd.",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Wartość",
+      dataIndex: "total",
+      key: "total",
+    },
+  ];
+
   return (
     <div>
-      <Alert message="TO DO" type="error" />
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Button type="primary" onClick={onPublishClick}>
+        Zamów
+      </Button>
     </div>
   );
 }
