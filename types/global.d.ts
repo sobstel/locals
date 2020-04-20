@@ -1,4 +1,10 @@
-type GroupedProducts = {
+type Product = { name: string; price: number };
+
+type ProductsGroup = {
   name: string;
-  products: { name: string; price: number }[];
-}[];
+  products: Product[];
+};
+
+type GroupedProducts = ProductsGroup[];
+
+type LineItem = { name: string; price: number; count: number };
