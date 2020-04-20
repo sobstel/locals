@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { Button, Collapse, List } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Collapse, List } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./shared/Loading";
+import Product from "./products/Product";
 
 const { Panel } = Collapse;
 
 export default function Products() {
   const dispatch = useDispatch();
   const groupedProducts: GroupedProducts = useSelector(
-    (state) => state.products.groupedProducts
+    (state: any) => state.products.groupedProducts
   );
-  const loading = useSelector((state) => state.loading.fetchProducts);
+  const loading = useSelector((state: any) => state.loading.fetchProducts);
 
   useEffect(() => {
     // TODO: how to reload products? as they remembered by redux-persist
@@ -21,7 +21,8 @@ export default function Products() {
   }, [dispatch]);
 
   // TODO: how to useCallback for a loop?
-  const addProduct = (product) => dispatch({ type: "ADD_PRODUCT", product });
+  const modifyBasket = (product: Product, op: string) =>
+    dispatch({ type: "MODIFY_BASKET", product, op });
 
   if (loading) {
     return <Loading message="Trwa ładowanie produktów..." />;
@@ -43,21 +44,10 @@ export default function Products() {
             <List
               dataSource={group.products}
               renderItem={(item) => (
-                <List.Item
-                  actions={[
-                    <Button
-                      key="add"
-                      type="primary"
-                      shape="circle"
-                      size="large"
-                      icon={<PlusOutlined />}
-                      onClick={() => addProduct(item)}
-                    />,
-                  ]}
-                >
-                  <List.Item.Meta title={item.name} />
-                  <div>{item.price.toFixed(2)} zł</div>
-                </List.Item>
+                <Product
+                  id={item.name}
+                  onClick={(product, op) => modifyBasket(product, op)}
+                />
               )}
             />
           </Panel>

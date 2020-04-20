@@ -7,7 +7,9 @@ import rootReducer from "./reducers";
 import rootSaga from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
-const middlewares = compose(applyMiddleware(sagaMiddleware));
+const composeEnhancers =
+  (global as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const middlewares = composeEnhancers(applyMiddleware(sagaMiddleware));
 
 export default () => {
   const persistedReducer = persistReducer(
