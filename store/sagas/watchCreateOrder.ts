@@ -15,6 +15,10 @@ function* createOrdert() {
   const template = yield call(fetchTemplate);
 
   const brand = getBrand();
+  const subtotal = items
+    .reduce((sum, item) => sum + item.count * item.price, 0)
+    .toFixed(2);
+
   const order = {
     number: "1",
     createdAt: Date.now(),
@@ -34,12 +38,10 @@ function* createOrdert() {
       price: `${item.price.toFixed(2)} zł`,
     })),
     summary: {
-      subtotal: items
-        .reduce((sum, item) => sum + item.count * item.price, 0)
-        .toFixed(2),
+      subtotal: subtotal,
       shipping: 0,
       tax: 0,
-      total: 0,
+      total: subtotal,
     },
   };
 

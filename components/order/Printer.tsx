@@ -22,9 +22,9 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                     </td>
 
                     <td>
-                      Invoice #: {number}
+                      Zamówienie #: {number}
                       <br />
-                      Created: {createdAt}
+                      Data: {createdAt}
                     </td>
                   </tr>
                 </table>
@@ -96,14 +96,21 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                     <td>Podsumowanie:</td>
                     <td>{summary.subtotal}</td>
                   </tr>
-                  <tr>
-                    <td>Dostawa:</td>
-                    <td>{summary.shipping}</td>
-                  </tr>
-                  <tr>
-                    <td>Podatek:</td>
-                    <td>{summary.tax}</td>
-                  </tr>
+
+                  {summary.shipping && (
+                    <tr>
+                      <td>Dostawa:</td>
+                      <td>{summary.shipping}</td>
+                    </tr>
+                  )}
+
+                  {summary.tax && (
+                    <tr>
+                      <td>Podatek:</td>
+                      <td>{summary.tax}</td>
+                    </tr>
+                  )}
+
                   <tr>
                     <td>Do zapłaty:</td>
                     <td>{summary.total}</td>
