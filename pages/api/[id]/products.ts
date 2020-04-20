@@ -1,7 +1,7 @@
 import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
-import { getBrand } from "../../../config/getBrand";
+import getBrand from "../../../config/getBrand";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {

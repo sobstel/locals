@@ -1,9 +1,19 @@
-import dynamic from "next/dynamic";
+import Error from "next/error";
+import App from "../components/App";
+import { BrandProvider } from "../config/BrandContext";
+import getBrand from "../config/getBrand";
 
-const App = dynamic(() => import("../components/App"), {
-  ssr: false,
-});
+export default function (props) {
+  const brand = getBrand(props.id);
+  if (!brand) return <Error statusCode={404} />;
 
-export default function () {
-  return <App />;
+  return (
+    <BrandProvider value={brand.id}>
+      <App />
+    </BrandProvider>
+  );
+}
+
+export function getServerSideProps(context) {
+  return { props: { id: context.params.id } };
 }

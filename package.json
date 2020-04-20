@@ -14,6 +14,7 @@
     "axios": "^0.19.2",
     "immer": "^6.0.3",
     "next": "latest",
+    "next-redux-wrapper": "^5.0.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^7.2.0",
