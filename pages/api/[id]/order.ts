@@ -13,9 +13,9 @@ export default async (req: NowRequest, res: NowResponse) => {
   const prefix = brand.storage.prefix;
 
   const s3 = new aws.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACESS_KEY,
-    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AMZ_ACCESS_KEY,
+    secretAccessKey: process.env.AMZ_SECRET_KEY,
+    region: process.env.AMZ_REGION,
   });
 
   const uid = cuid();
