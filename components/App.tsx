@@ -4,12 +4,14 @@ import { Layout, Menu } from "antd";
 
 import Products from "../components/Products";
 import Basket from "../components/Basket";
+import Orders from "../components/Orders";
 import BasketButton from "../components/header/Basket";
 import withStore from "./withStore";
 
 const MENU_ITEMS = {
   products: { name: "Produkty", button: null, component: Products },
   basket: { name: "Koszyk", button: BasketButton, component: Basket },
+  orders: { name: "Zamówienia", button: null, component: Orders },
 };
 
 const { Content, Header } = Layout;

@@ -4,7 +4,7 @@ type State = {
   items: LineItem[];
 };
 type Action = {
-  type: "MODIFY_BASKET";
+  type: "MODIFY_BASKET" | "CLEAR_BASKET";
   product: Product;
   op: "add" | "remove";
 };
@@ -17,6 +17,12 @@ export default function basketReducer(
   action: Action
 ) {
   switch (action.type) {
+    case "CLEAR_BASKET": {
+      return produce(state, (draft) => {
+        draft.items = [];
+      });
+    }
+
     case "MODIFY_BASKET": {
       const { product, op } = action;
       const productIndex = state.items.findIndex(

@@ -1,17 +1,49 @@
-import { Alert, Button } from "antd";
-import axios from "axios";
-import { getBrand } from "../config/getBrand";
+import { Button, Table } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Basket() {
+  const dispatch = useDispatch();
   const onPublishClick = () => {
-    const brand = getBrand();
-    axios.post(`/api/${brand.id}/order`).then((data) => console.log(data));
+    dispatch({ type: "CREATE_ORDER" });
   };
+
+  const items = useSelector((state: any) => state.basket.items);
+
+  const dataSource = (items || []).map((item) => ({
+    ...item,
+    total: `${(item.price * item.count).toFixed(2)} zł`,
+    price: `${item.price.toFixed(2)} zł`,
+  }));
+
+  const columns = [
+    {
+      title: "Nazwa",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Ilość",
+      dataIndex: "count",
+      key: "count",
+    },
+    {
+      title: "Cena jd.",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Wartość",
+      dataIndex: "total",
+      key: "total",
+    },
+  ];
 
   return (
     <div>
-      <Alert message="TO DO" type="error" />
-      <Button onClick={onPublishClick}>Test</Button>
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Button type="primary" onClick={onPublishClick}>
+        Zamów
+      </Button>
     </div>
   );
 }

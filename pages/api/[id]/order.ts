@@ -1,9 +1,8 @@
-import * as R from "remeda";
+import fs from "fs";
 import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
-import { google } from "googleapis";
 import { getBrand } from "../../../config/getBrand";
 
 export default async (req: NowRequest, res: NowResponse) => {
@@ -19,13 +18,18 @@ export default async (req: NowRequest, res: NowResponse) => {
     region: process.env.AWS_REGION,
   });
 
+  const uid = cuid();
+  const documentKey = `u/${prefix}/${moment().format(
+    "YYYY/MM/DD"
+  )}/${uid}.html`;
+
   try {
-    const uid = cuid();
+    const html = req.body.order;
     await s3
       .putObject({
         Bucket: "locals-store",
-        Key: `u/${prefix}/${moment().format("YYYY/MM/DD")}/${uid}.html`,
-        Body: `<html><body><h1>${uid}</h1></body></html`,
+        Key: documentKey,
+        Body: html,
         ACL: "public-read",
         ContentType: "text/html",
         Metadata: {
@@ -37,5 +41,8 @@ export default async (req: NowRequest, res: NowResponse) => {
     console.error(err);
   }
 
-  res.json({ done: true });
+  res.json({
+    done: true,
+    url: `https://locals-store.s3.eu-central-1.amazonaws.com/${documentKey}`,
+  });
 };
