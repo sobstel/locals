@@ -2,13 +2,14 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, Menu } from "antd";
 
+import Products from "../components/Products";
+import Basket from "../components/Basket";
+import BasketButton from "../components/header/Basket";
 import withStore from "./withStore";
-import Products from "./Products";
-import Basket from "./Basket";
 
 const MENU_ITEMS = {
-  products: { name: "Produkty", component: Products },
-  basket: { name: "Koszyk", component: Basket },
+  products: { name: "Produkty", button: null, component: Products },
+  basket: { name: "Koszyk", button: BasketButton, component: Basket },
 };
 
 const { Content, Header } = Layout;
@@ -16,7 +17,7 @@ const { Content, Header } = Layout;
 function App() {
   const dispatch = useDispatch();
   const activeMenuItemKey = useSelector(
-    (state) => state.core.activeMenuItemKey
+    (state: any) => state.core.activeMenuItemKey
   );
   const navigateTo = useCallback(
     ({ key }) => dispatch({ type: "NAVIGATE_TO", menuItemKey: key }),
@@ -37,7 +38,12 @@ function App() {
         >
           {Object.keys(MENU_ITEMS).map((menuItemKey) => {
             const menuItem = MENU_ITEMS[menuItemKey];
-            return <Menu.Item key={menuItemKey}>{menuItem.name}</Menu.Item>;
+            const Button = menuItem.button || "div";
+            return (
+              <Menu.Item key={menuItemKey}>
+                <Button>{menuItem.name}</Button>
+              </Menu.Item>
+            );
           })}
         </Menu>
       </Header>
