@@ -6,7 +6,6 @@ import Products from "../components/Products";
 import Basket from "../components/Basket";
 import Orders from "../components/Orders";
 import BasketButton from "../components/header/Basket";
-import withStore from "./withStore";
 
 const MENU_ITEMS = {
   products: { name: "Produkty", button: null, component: Products },
@@ -16,7 +15,7 @@ const MENU_ITEMS = {
 
 const { Content, Header } = Layout;
 
-function App() {
+export default function App() {
   const dispatch = useDispatch();
   const activeMenuItemKey = useSelector(
     (state: any) => state.core.activeMenuItemKey
@@ -36,6 +35,7 @@ function App() {
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={[activeMenuItemKey]}
+          selectedKeys={[activeMenuItemKey]}
           onClick={navigateTo}
         >
           {Object.keys(MENU_ITEMS).map((menuItemKey) => {
@@ -49,11 +49,7 @@ function App() {
           })}
         </Menu>
       </Header>
-      <Content>
-        <ActiveComponent />
-      </Content>
+      <Content>{ActiveComponent && <ActiveComponent />}</Content>
     </Layout>
   );
 }
-
-export default withStore(App);
