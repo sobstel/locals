@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Typography, Row, Col } from "antd";
 
 import { useSelector, useDispatch } from "react-redux";
-import useBrand from "../config/useBrand";
 
 import { clientIsValid } from "../utils/client";
 import { Cart } from "./basket/Cart";
@@ -26,8 +25,6 @@ export default function Basket() {
 
   const [stepIndex, setStepIndex] = useState(OrderStep.basket);
   const [client, setClient] = useState<Client>(lastClient);
-
-  const brand = useBrand();
 
   const Steps = [
     {

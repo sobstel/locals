@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { ShoppingOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 import brands from "../config/brands";
 
 const { Text } = Typography;
@@ -12,12 +12,12 @@ export default () => {
   return (
     <div className="tw-my-8 tw-text-center">
       <div>
-        <ShoppingOutlined className="tw-text-5xl" />
+        <ShoppingCartOutlined className="tw-text-5xl" />
       </div>
 
       <div className="tw-my-4">
         <Text className="tw-font-medium">
-          Formularz zamówienia dla małych sklepów
+          Formularz zamówienia dla małych lokalnych sklepów
         </Text>
       </div>
 
