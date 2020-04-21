@@ -26,7 +26,7 @@ export default function makeStore(
 
     if (key) {
       const persistedReducer = persistReducer(
-        { key, storage, whitelist: ["basket"] },
+        { key, storage, whitelist: ["basket", "orders"] },
         rootReducer
       );
 

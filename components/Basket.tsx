@@ -1,52 +1,113 @@
-import { Button, Table } from "antd";
+import React, { useState } from "react";
+import { Button, Typography, Row, Col } from "antd";
+
 import { useSelector, useDispatch } from "react-redux";
 import useBrand from "../config/useBrand";
 
+import { clientIsValid } from "../utils/client";
+import { Cart } from "./basket/Cart";
+import { Form } from "./basket/Form";
+import { Summary } from "./basket/Summary";
+
+enum OrderStep {
+  basket = 0,
+  form = 1,
+  confirm = 2,
+}
+
 export default function Basket() {
   const dispatch = useDispatch();
+  const { Text } = Typography;
+
+  const lastClient = useSelector((state: any) => state.orders.client) as Client;
+  const lineItems = useSelector(
+    (state: any) => state.basket.items
+  ) as LineItem[];
+
+  const [stepIndex, setStepIndex] = useState(OrderStep.basket);
+  const [client, setClient] = useState<Client>(lastClient);
+
   const brand = useBrand();
 
-  const onPublishClick = () => {
-    dispatch({ type: "CREATE_ORDER", brandId: brand.id });
-  };
-
-  const items = useSelector((state: any) => state.basket.items);
-
-  const dataSource = (items || []).map((item) => ({
-    ...item,
-    total: `${(item.price * item.count).toFixed(2)} zł`,
-    price: `${item.price.toFixed(2)} zł`,
-  }));
-
-  const columns = [
+  const Steps = [
     {
-      title: "Nazwa",
-      dataIndex: "name",
-      key: "name",
+      name: "Koszyk",
     },
     {
-      title: "Ilość",
-      dataIndex: "count",
-      key: "count",
+      name: "Dane",
+      canProceed: () => clientIsValid(client),
+      onLeave: () => dispatch({ type: "SAVE_CLIENT", client }),
     },
     {
-      title: "Cena jd.",
-      dataIndex: "price",
-      key: "price",
-    },
-    {
-      title: "Wartość",
-      dataIndex: "total",
-      key: "total",
+      name: "Zamów",
     },
   ];
 
+  const currentStep = Steps[stepIndex];
+
+  const onBackClick = () => setStepIndex(stepIndex - 1);
+  const onPublishClick = () => {
+    // dispatch({ type: "CREATE_ORDER", brandId: brand.id });
+    if (currentStep.onLeave) {
+      currentStep.onLeave();
+    }
+    setStepIndex(stepIndex + 1);
+  };
+
+  const canGoBack = stepIndex == OrderStep.form;
+  const isEmpty = lineItems.length === 0;
+  const enableNextButton =
+    !isEmpty && (currentStep.canProceed || (() => true))();
+
+  // NOTE: no idea why but I don't care 🖕🏻
+  const FUFlex = [
+    [2, 3, 1],
+    [2, 3, 2],
+    [1, 3, 2],
+  ];
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
-      <Button type="primary" onClick={onPublishClick}>
-        Zamów
-      </Button>
+      <Row className="tw-py-2 tw-text-center" align="middle">
+        <Col flex={FUFlex[stepIndex][0]}>
+          <Text type="secondary">
+            {stepIndex > 0 && Steps[stepIndex - 1].name}
+          </Text>
+        </Col>
+        <Col flex={FUFlex[stepIndex][1]}>
+          <Text className="tw-text-xl"> {currentStep.name}</Text>
+        </Col>
+        <Col flex={FUFlex[stepIndex][2]}>
+          <Text type="secondary">
+            {stepIndex < Steps.length - 1 && Steps[stepIndex + 1].name}
+          </Text>
+        </Col>
+      </Row>
+
+      {stepIndex === OrderStep.basket && <Cart items={lineItems} />}
+      {stepIndex === OrderStep.form && (
+        <Form client={client} onUpdate={setClient} />
+      )}
+      {stepIndex === OrderStep.confirm && (
+        <Summary client={client} items={lineItems} />
+      )}
+
+      {stepIndex !== 2 && (
+        <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-end">
+          {canGoBack && (
+            <Button className="tw-mr-2" shape="round" onClick={onBackClick}>
+              Wróć
+            </Button>
+          )}
+          <Button
+            type={enableNextButton ? "primary" : "default"}
+            shape="round"
+            disabled={!enableNextButton}
+            onClick={onPublishClick}
+          >
+            Zamów
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
