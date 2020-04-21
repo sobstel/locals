@@ -18,19 +18,21 @@ export default function makeStore(
     (global as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const middlewares = composeEnhancers(applyMiddleware(sagaMiddleware));
 
-  if (isServer) {
-    store = createStore(rootReducer, initialState, middlewares);
-  } else {
+  store = createStore(rootReducer, initialState, middlewares);
+
+  if (!isServer) {
     // SMELL: hack to get a brand id
-    const key = window.location.pathname.slice(1);
+    const key = window.location.pathname.slice(1).replace(/\/$/, "");
 
-    const persistedReducer = persistReducer(
-      { key, storage, whitelist: ["basket", "orders"] },
-      rootReducer
-    );
+    if (key) {
+      const persistedReducer = persistReducer(
+        { key, storage, whitelist: ["basket", "orders"] },
+        rootReducer
+      );
 
-    store = createStore(persistedReducer, initialState, middlewares);
-    persistStore(store);
+      store = createStore(persistedReducer, initialState, middlewares);
+      persistStore(store);
+    }
   }
 
   sagaMiddleware.run(rootSaga);

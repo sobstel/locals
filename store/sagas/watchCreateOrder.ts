@@ -16,7 +16,7 @@ function* createOrder(action) {
   const items = (yield select((state) => state.basket.items)) as LineItem[];
   const template = yield call(fetchTemplate);
 
-  const brand = getBrand(action.id);
+  const brand = getBrand(action.brandId);
   const subtotal = items.reduce(
     (sum, item) => sum.add(Money.from(item.price).times(item.count)),
     Money.cents(0)
