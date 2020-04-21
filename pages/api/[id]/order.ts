@@ -2,15 +2,13 @@ import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
-import getBrand from "../../../config/getBrand";
 
 const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
 
 // TODO: ensure it's POST only
 export default async (req: NowRequest, res: NowResponse) => {
   const id = req.query.id as string;
-  const brand = getBrand(id);
-  const prefix = brand.id;
+  const prefix = id;
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
