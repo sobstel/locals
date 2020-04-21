@@ -1,9 +1,8 @@
-import fs from "fs";
 import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
-import { getBrand } from "../../../config/getBrand";
+import getBrand from "../../../config/getBrand";
 
 export default async (req: NowRequest, res: NowResponse) => {
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");

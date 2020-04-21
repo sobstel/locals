@@ -9,6 +9,15 @@ type GroupedProducts = ProductsGroup[];
 
 type LineItem = { name: string; price: number; count: number };
 
+type OrderItem = LineItem;
+
+type OrderSummary = {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+};
+
 type Order = {
   number: string;
   createdAt: number;
@@ -25,11 +34,6 @@ type Order = {
     state: string;
     country: string;
   };
-  items: { name: string; price: number; count: number; total: number }[];
-  summary: {
-    subtotal: number;
-    shipping: number;
-    tax: number;
-    total: number;
-  };
+  items: OrderItem[];
+  summary: OrderSummary;
 };

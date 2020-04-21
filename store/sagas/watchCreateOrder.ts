@@ -2,22 +2,25 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
 import { select, takeLatest, call, put } from "redux-saga/effects";
-import { getBrand } from "../../config/getBrand";
+import getBrand from "../../config/getBrand";
 import { OrderPrinter } from "../../components/order/Printer";
+import Money from "../../utils/cents";
+import { formatMoney } from "../../utils/accounting";
 
 async function fetchTemplate() {
   const response = await axios.get("/data/order.template.html");
   return response.data;
 }
 
-function* createOrdert() {
-  const items = yield select((state) => state.basket.items);
+function* createOrder(action) {
+  const items = (yield select((state) => state.basket.items)) as LineItem[];
   const template = yield call(fetchTemplate);
 
-  const brand = getBrand();
-  const subtotal = items
-    .reduce((sum, item) => sum + item.count * item.price, 0)
-    .toFixed(2);
+  const brand = getBrand(action.id);
+  const subtotal = items.reduce(
+    (sum, item) => sum.add(Money.from(item.price).times(item.count)),
+    Money.cents(0)
+  );
 
   const order = {
     number: "1",
@@ -34,14 +37,14 @@ function* createOrdert() {
     },
     items: (items || []).map((item) => ({
       ...item,
-      total: `${(item.price * item.count).toFixed(2)} zł`,
-      price: `${item.price.toFixed(2)} zł`,
+      total: Money.from(item.price).times(item.count).cents,
+      price: Money.from(item.price).cents,
     })),
     summary: {
-      subtotal: subtotal,
+      subtotal: subtotal.cents,
       shipping: 0,
       tax: 0,
-      total: subtotal,
+      total: subtotal.cents,
     },
   };
 
@@ -65,5 +68,5 @@ function* createOrdert() {
 }
 
 export default function* watchCreateOrder() {
-  yield takeLatest("CREATE_ORDER", createOrdert);
+  yield takeLatest("CREATE_ORDER", createOrder);
 }
