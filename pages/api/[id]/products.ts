@@ -5,9 +5,11 @@ import getBrand from "../../../config/getBrand";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
-  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-
   const brand = getBrand(req.query.id as string);
+  if (!brand) {
+    res.json("");
+    return;
+  }
 
   const sheets = google.sheets("v4");
   const result = await sheets.spreadsheets.values.get({
@@ -42,5 +44,6 @@ export default async (req: NowRequest, res: NowResponse) => {
     R.filter((group) => group.products.length > 0)
   );
 
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.json(groupedProducts);
 };
