@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .anticon {
-    vertical-align: initial!important;
+  vertical-align: initial;
 }

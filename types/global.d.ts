@@ -1,3 +1,13 @@
+type Brand = {
+  id?: string;
+  name: string;
+  spreadsheet: {
+    id: string;
+    range: string;
+  };
+  public?: false;
+};
+
 type Product = { name: string; price: number };
 
 type ProductsGroup = {

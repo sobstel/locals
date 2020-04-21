@@ -2,8 +2,8 @@ import { Provider } from "react-redux";
 import withRedux from "next-redux-wrapper";
 import makeStore from "../store/makeStore";
 
-import "../tailwind.css";
 import "antd/dist/antd.css";
+import "../styles.css";
 
 function MyApp({ Component, pageProps, store }) {
   return (

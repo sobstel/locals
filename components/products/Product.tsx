@@ -54,13 +54,15 @@ export default function Product(props: {
     >
       <List.Item.Meta
         title={
-          <div className={inBasket ? "tw-font-bold" : ""}>{product.name}</div>
+          <div className={`tw-clearfix ${inBasket ? "tw-font-semibold" : ""}`}>
+            <div className="tw-float-left">{product.name}</div>
+            <div className="tw-float-right">
+              {inBasket && <span className="tw-mr-1">{lineItem.count} x</span>}
+              <span>{formatMoney(Money.from(product.price))}</span>
+            </div>
+          </div>
         }
       />
-      {inBasket && (
-        <span className="tw-mr-2 tw-font-bold">{lineItem.count} x</span>
-      )}
-      <div>{formatMoney(Money.from(product.price))}</div>
     </List.Item>
   );
 }
