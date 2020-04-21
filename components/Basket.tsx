@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Button, Typography, Row, Col } from "antd";
 
 import { useSelector, useDispatch } from "react-redux";
-import Form from "antd/lib/form/Form";
 import useBrand from "../config/useBrand";
+
 import { Cart } from "./basket/Cart";
+import { Form } from "./basket/Form";
 
 enum OrderStep {
   basket = 0,

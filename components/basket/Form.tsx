@@ -17,7 +17,7 @@ export const Form: React.FC<{}> = () => {
   return (
     <div className="tw-px-2">
       <AntForm layout="vertical" size="middle">
-        <Item>
+        <Item label="Imię i nazwisko" required>
           <Row gutter={8}>
             <Col span={12}>
               <Item
@@ -30,7 +30,7 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="Imie" />
+                <Input placeholder="Przemek" />
               </Item>
             </Col>
             <Col span={12}>
@@ -44,7 +44,7 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="Nazwisko" />
+                <Input placeholder="Przykładowy" />
               </Item>
             </Col>
           </Row>
@@ -62,10 +62,7 @@ export const Form: React.FC<{}> = () => {
               },
             ]}
           >
-            <Input.TextArea rows={4} placeholder="Ulica, 00-00, Miasto" />
-          </Item>
-          <Item name="addressLine2">
-            <Input />
+            <Input.TextArea rows={2} placeholder="ul. Przykładowa 26/21" />
           </Item>
           <Row gutter={8}>
             <Col span={16}>
