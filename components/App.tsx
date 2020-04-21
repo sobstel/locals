@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <Layout>
-      <Header className="tw-sticky tw-top-0 tw-px-0">
+      <Header className="tw-sticky tw-top-0 tw-px-0 tw-z-10">
         <Menu
           theme="dark"
           mode="horizontal"
