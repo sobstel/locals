@@ -32,8 +32,8 @@ export const Form: React.FC<{
   const commonInputProps = { disabled: typeof props.onUpdate !== "function" };
 
   return (
-    <div className="tw-px-2">
-      <AntForm layout="vertical" size="middle">
+    <div className="tw-px-2 tw-pt-3 tw-pb-1 tw-bg-white">
+      <AntForm layout="vertical" size="middle" initialValues={client}>
         <Item label="Imię i nazwisko" required>
           <Row gutter={8}>
             <Col span={12}>
@@ -50,7 +50,6 @@ export const Form: React.FC<{
                 <Input
                   {...commonInputProps}
                   placeholder="Przemek"
-                  value={client.firstname}
                   onChange={onInputChange("firstname")}
                 />
               </Item>
@@ -69,7 +68,6 @@ export const Form: React.FC<{
                 <Input
                   {...commonInputProps}
                   placeholder="Przykładowy"
-                  value={client.lastname}
                   onChange={onInputChange("lastname")}
                 />
               </Item>
@@ -93,7 +91,6 @@ export const Form: React.FC<{
               {...commonInputProps}
               rows={2}
               placeholder="ul. Przykładowa 26/21"
-              value={client.addressLine1}
               onChange={onInputChange("addressLine1")}
             />
           </Item>
@@ -112,7 +109,6 @@ export const Form: React.FC<{
                 <Input
                   {...commonInputProps}
                   placeholder="Miasto"
-                  value={client.city}
                   onChange={onInputChange("city")}
                 />
               </Item>
@@ -131,7 +127,6 @@ export const Form: React.FC<{
                 <Input
                   {...commonInputProps}
                   placeholder="00-00"
-                  value={client.postal}
                   onChange={onInputChange("postal")}
                 />
               </Item>
@@ -153,11 +148,7 @@ export const Form: React.FC<{
             },
           ]}
         >
-          <Input
-            {...commonInputProps}
-            value={client.email}
-            onChange={onInputChange("email")}
-          />
+          <Input {...commonInputProps} onChange={onInputChange("email")} />
         </Item>
       </AntForm>
     </div>

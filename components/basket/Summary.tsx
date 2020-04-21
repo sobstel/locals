@@ -3,7 +3,7 @@ import { Button } from "antd";
 import { Cart } from "./Cart";
 
 const ClientInfo: React.FC<{ client: Client }> = ({ client }) => (
-  <div className="tw-p-2 tw-text-right">
+  <div className="tw-p-2 tw-text-right tw-bg-white">
     <div className="tw-font-bold tw-mb-1">
       {client.firstname} {client.lastname}
     </div>

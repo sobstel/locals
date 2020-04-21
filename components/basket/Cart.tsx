@@ -5,20 +5,25 @@ import { formatMoney } from "../../utils/accounting";
 
 type TableDataItem = LineItem & {
   total: Money;
-  summary: string;
 };
 
 const TableColumns = [
   {
     title: "Product",
     dataIndex: "name",
-    key: "name",
+    key: "$name",
   },
   {
-    title: "",
+    title: "Wartość",
     dataIndex: "summary",
-    key: "summary",
+    key: "$summary",
     align: "right",
+    render: (_, record) => (
+      <div>
+        <small>{record.count}&nbsp;x&nbsp;</small>
+        {formatMoney(record.price)}
+      </div>
+    ),
   },
 ];
 
@@ -54,7 +59,6 @@ export const Cart: React.FC<{ items: LineItem[] }> = ({ items }) => {
     return {
       ...item,
       total,
-      summary: `${item.count}\u00A0x\u00A0${formatMoney(price)}`,
     } as TableDataItem;
   });
 
@@ -63,6 +67,7 @@ export const Cart: React.FC<{ items: LineItem[] }> = ({ items }) => {
       dataSource={dataSource}
       columns={TableColumns as unknown[]}
       pagination={false}
+      rowKey={(record) => record.name}
       summary={(pageData) => {
         if (!pageData.length) {
           return null;

@@ -4,6 +4,7 @@ import { Button, Typography, Row, Col } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import useBrand from "../config/useBrand";
 
+import { clientIsValid } from "../utils/client";
 import { Cart } from "./basket/Cart";
 import { Form } from "./basket/Form";
 import { Summary } from "./basket/Summary";
@@ -11,63 +12,86 @@ import { Summary } from "./basket/Summary";
 enum OrderStep {
   basket = 0,
   form = 1,
-  payment = 2,
-  ready = 3,
+  confirm = 2,
 }
-
-const Steps = [
-  { name: "Koszyk" },
-  { name: "Dane" },
-  { name: "Płatność" },
-  { name: "Gotowe" },
-];
 
 export default function Basket() {
   const dispatch = useDispatch();
+  const { Text } = Typography;
 
-  const [currentStep, setStep] = useState(OrderStep.basket);
-  const [client, setClient] = useState<Client>(null);
-
-  const brand = useBrand();
-
-  const onBackClick = () => setStep(currentStep - 1);
-  const onPublishClick = () => {
-    // dispatch({ type: "CREATE_ORDER", id: brand.id });
-    setStep(currentStep + 1);
-  };
-
+  const lastClient = useSelector((state: any) => state.orders.client) as Client;
   const lineItems = useSelector(
     (state: any) => state.basket.items
   ) as LineItem[];
 
-  const canGoBack = currentStep > 0;
+  const [stepIndex, setStepIndex] = useState(OrderStep.basket);
+  const [client, setClient] = useState<Client>(lastClient);
+
+  const brand = useBrand();
+
+  const Steps = [
+    {
+      name: "Koszyk",
+    },
+    {
+      name: "Dane",
+      canProceed: () => clientIsValid(client),
+      onLeave: () => dispatch({ type: "SAVE_CLIENT", client }),
+    },
+    {
+      name: "Zamów",
+    },
+  ];
+
+  const currentStep = Steps[stepIndex];
+
+  const onBackClick = () => setStepIndex(stepIndex - 1);
+  const onPublishClick = () => {
+    // dispatch({ type: "CREATE_ORDER", id: brand.id });
+    if (currentStep.onLeave) {
+      currentStep.onLeave();
+    }
+    setStepIndex(stepIndex + 1);
+  };
+
+  const canGoBack = stepIndex == OrderStep.form;
   const isEmpty = lineItems.length === 0;
+  const enableNextButton =
+    !isEmpty && (currentStep.canProceed || (() => true))();
 
-  const { Text } = Typography;
-
+  // NOTE: no idea why but I don't care 🖕🏻
+  const FUFlex = [
+    [2, 3, 1],
+    [2, 3, 2],
+    [1, 3, 2],
+  ];
   return (
     <div>
       <Row className="tw-py-2 tw-text-center" align="middle">
-        <Col flex={1}>
+        <Col flex={FUFlex[stepIndex][0]}>
           <Text type="secondary">
-            {currentStep > 0 && Steps[currentStep - 1].name}
+            {stepIndex > 0 && Steps[stepIndex - 1].name}
           </Text>
         </Col>
-        <Col flex={3}>
-          <Text className="tw-text-xl"> {Steps[currentStep].name}</Text>
+        <Col flex={FUFlex[stepIndex][1]}>
+          <Text className="tw-text-xl"> {currentStep.name}</Text>
         </Col>
-        <Col flex={1}>
+        <Col flex={FUFlex[stepIndex][2]}>
           <Text type="secondary">
-            {currentStep < Steps.length && Steps[currentStep + 1].name}
+            {stepIndex < Steps.length - 1 && Steps[stepIndex + 1].name}
           </Text>
         </Col>
       </Row>
 
-      {currentStep == 0 && <Cart items={lineItems} />}
-      {currentStep == 1 && <Form client={client} onUpdate={setClient} />}
-      {currentStep == 2 && <Summary client={client} items={lineItems} />}
+      {stepIndex === OrderStep.basket && <Cart items={lineItems} />}
+      {stepIndex === OrderStep.form && (
+        <Form client={client} onUpdate={setClient} />
+      )}
+      {stepIndex === OrderStep.confirm && (
+        <Summary client={client} items={lineItems} />
+      )}
 
-      {currentStep !== 2 && (
+      {stepIndex !== 2 && (
         <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-end">
           {canGoBack && (
             <Button className="tw-mr-2" shape="round" onClick={onBackClick}>
@@ -75,9 +99,9 @@ export default function Basket() {
             </Button>
           )}
           <Button
-            type="primary"
+            type={enableNextButton ? "primary" : "default"}
             shape="round"
-            disabled={isEmpty}
+            disabled={!enableNextButton}
             onClick={onPublishClick}
           >
             Zamów
