@@ -12,8 +12,25 @@ const DefaultClient: Client = {
   email: "",
 };
 
-export const Form: React.FC<{}> = () => {
+export const Form: React.FC<{
+  client?: Client;
+  onUpdate?: (client: Client) => void;
+}> = (props) => {
   const { Item } = AntForm;
+
+  const client = { ...DefaultClient, ...(props.client || {}) };
+
+  const updateClient = (field: string, value: string) => {
+    client[field] = value;
+    props.onUpdate(client);
+  };
+
+  const onInputChange = <T extends Element & { value: string }>(
+    field: string
+  ) => (e: React.ChangeEvent<T>) => updateClient(field, e.target.value);
+
+  const commonInputProps = { disabled: typeof props.onUpdate !== "function" };
+
   return (
     <div className="tw-px-2">
       <AntForm layout="vertical" size="middle">
@@ -30,7 +47,12 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="Przemek" />
+                <Input
+                  {...commonInputProps}
+                  placeholder="Przemek"
+                  value={client.firstname}
+                  onChange={onInputChange("firstname")}
+                />
               </Item>
             </Col>
             <Col span={12}>
@@ -44,7 +66,12 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="Przykładowy" />
+                <Input
+                  {...commonInputProps}
+                  placeholder="Przykładowy"
+                  value={client.lastname}
+                  onChange={onInputChange("lastname")}
+                />
               </Item>
             </Col>
           </Row>
@@ -62,7 +89,13 @@ export const Form: React.FC<{}> = () => {
               },
             ]}
           >
-            <Input.TextArea rows={2} placeholder="ul. Przykładowa 26/21" />
+            <Input.TextArea
+              {...commonInputProps}
+              rows={2}
+              placeholder="ul. Przykładowa 26/21"
+              value={client.addressLine1}
+              onChange={onInputChange("addressLine1")}
+            />
           </Item>
           <Row gutter={8}>
             <Col span={16}>
@@ -76,7 +109,12 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="Miasto" />
+                <Input
+                  {...commonInputProps}
+                  placeholder="Miasto"
+                  value={client.city}
+                  onChange={onInputChange("city")}
+                />
               </Item>
             </Col>
             <Col span={8}>
@@ -90,7 +128,12 @@ export const Form: React.FC<{}> = () => {
                   },
                 ]}
               >
-                <Input placeholder="00-00" />
+                <Input
+                  {...commonInputProps}
+                  placeholder="00-00"
+                  value={client.postal}
+                  onChange={onInputChange("postal")}
+                />
               </Item>
             </Col>
           </Row>
@@ -110,7 +153,11 @@ export const Form: React.FC<{}> = () => {
             },
           ]}
         >
-          <Input />
+          <Input
+            {...commonInputProps}
+            value={client.email}
+            onChange={onInputChange("email")}
+          />
         </Item>
       </AntForm>
     </div>

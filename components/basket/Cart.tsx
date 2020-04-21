@@ -38,7 +38,7 @@ const TableSummary: React.FC<{ data: TableDataItem[] }> = ({ data }) => {
   );
 
   return (
-    <tr>
+    <tr key="footer">
       <th>Podsumowanie</th>
       <td className="tw-text-right">
         <Text strong>{formatMoney(sum.total)}</Text>

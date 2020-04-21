@@ -6,6 +6,7 @@ import useBrand from "../config/useBrand";
 
 import { Cart } from "./basket/Cart";
 import { Form } from "./basket/Form";
+import { Summary } from "./basket/Summary";
 
 enum OrderStep {
   basket = 0,
@@ -25,6 +26,7 @@ export default function Basket() {
   const dispatch = useDispatch();
 
   const [currentStep, setStep] = useState(OrderStep.basket);
+  const [client, setClient] = useState<Client>(null);
 
   const brand = useBrand();
 
@@ -62,24 +64,26 @@ export default function Basket() {
       </Row>
 
       {currentStep == 0 && <Cart items={lineItems} />}
+      {currentStep == 1 && <Form client={client} onUpdate={setClient} />}
+      {currentStep == 2 && <Summary client={client} items={lineItems} />}
 
-      {currentStep == 1 && <Form />}
-
-      <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-end">
-        {canGoBack && (
-          <Button className="tw-mr-2" shape="round" onClick={onBackClick}>
-            Wróć
+      {currentStep !== 2 && (
+        <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-end">
+          {canGoBack && (
+            <Button className="tw-mr-2" shape="round" onClick={onBackClick}>
+              Wróć
+            </Button>
+          )}
+          <Button
+            type="primary"
+            shape="round"
+            disabled={isEmpty}
+            onClick={onPublishClick}
+          >
+            Zamów
           </Button>
-        )}
-        <Button
-          type="primary"
-          shape="round"
-          disabled={isEmpty}
-          onClick={onPublishClick}
-        >
-          Zamów
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
