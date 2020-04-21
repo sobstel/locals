@@ -8,7 +8,9 @@ import "antd/dist/antd.css";
 function MyApp({ Component, pageProps, store }) {
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <div className="tw-mx-auto tw-max-w-2xl">
+        <Component {...pageProps} />
+      </div>
     </Provider>
   );
 }

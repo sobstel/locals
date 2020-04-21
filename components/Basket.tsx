@@ -1,10 +1,13 @@
 import { Button, Table } from "antd";
 import { useSelector, useDispatch } from "react-redux";
+import useBrand from "../config/useBrand";
 
 export default function Basket() {
   const dispatch = useDispatch();
+  const brand = useBrand();
+
   const onPublishClick = () => {
-    dispatch({ type: "CREATE_ORDER" });
+    dispatch({ type: "CREATE_ORDER", brandId: brand.id });
   };
 
   const items = useSelector((state: any) => state.basket.items);

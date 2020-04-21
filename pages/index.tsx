@@ -1,7 +1,35 @@
+import { Typography } from "antd";
+import { ShoppingOutlined } from "@ant-design/icons";
+import brands from "../config/brands";
+
+const { Text } = Typography;
+
+const publicBrandIds = Object.keys(brands).filter(
+  (id) => brands[id].public !== false
+);
+
 export default () => {
   return (
-    <div style={{ marginTop: 20, textAlign: "center" }}>
-      <p>locals</p>
+    <div className="tw-my-8 tw-text-center">
+      <div>
+        <ShoppingOutlined className="tw-text-5xl" />
+      </div>
+
+      <div className="tw-my-4">
+        <Text className="tw-font-medium">
+          Formularz zamówienia dla małych sklepów
+        </Text>
+      </div>
+
+      <div className="tw-my-4">
+        {publicBrandIds.map((brandId) => (
+          <div key={brandId}>
+            <Text>
+              <a href={`/${brandId}`}>{brandId}</a>
+            </Text>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

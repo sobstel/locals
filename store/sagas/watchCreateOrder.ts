@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
 import { select, takeLatest, call, put } from "redux-saga/effects";
-import { getBrand } from "../../config/getBrand";
+import getBrand from "../../config/getBrand";
 import { OrderPrinter } from "../../components/order/Printer";
 
 async function fetchTemplate() {
@@ -10,11 +10,11 @@ async function fetchTemplate() {
   return response.data;
 }
 
-function* createOrdert() {
+function* createOrder(action) {
   const items = yield select((state) => state.basket.items);
   const template = yield call(fetchTemplate);
 
-  const brand = getBrand();
+  const brand = getBrand(action.brandId);
   const subtotal = items
     .reduce((sum, item) => sum + item.count * item.price, 0)
     .toFixed(2);
@@ -65,5 +65,5 @@ function* createOrdert() {
 }
 
 export default function* watchCreateOrder() {
-  yield takeLatest("CREATE_ORDER", createOrdert);
+  yield takeLatest("CREATE_ORDER", createOrder);
 }
