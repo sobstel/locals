@@ -29,7 +29,7 @@ export default function App() {
     MENU_ITEMS[activeMenuItemKey] && MENU_ITEMS[activeMenuItemKey].component;
 
   return (
-    <Layout className="tw-max-w-2xl tw-m-auto">
+    <Layout>
       <Header>
         <Menu
           theme="dark"

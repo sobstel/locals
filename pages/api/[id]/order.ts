@@ -1,16 +1,16 @@
-import fs from "fs";
 import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
-import { getBrand } from "../../../config/getBrand";
+import getBrand from "../../../config/getBrand";
 
+const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
+
+// TODO: ensure it's POST only
 export default async (req: NowRequest, res: NowResponse) => {
-  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
-
   const id = req.query.id as string;
   const brand = getBrand(id);
-  const prefix = brand.storage.prefix;
+  const prefix = brand.id;
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
@@ -43,6 +43,6 @@ export default async (req: NowRequest, res: NowResponse) => {
 
   res.json({
     done: true,
-    url: `https://locals-store.s3.eu-central-1.amazonaws.com/${documentKey}`,
+    url: `${STORAGE_BASE_URL}/${documentKey}`,
   });
 };
