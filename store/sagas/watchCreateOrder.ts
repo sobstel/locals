@@ -34,6 +34,7 @@ function* createOrder(action) {
       country: "PL",
       postal: "00-666",
       state: "SL",
+      email: "test@test.com",
     },
     items: (items || []).map((item) => ({
       ...item,

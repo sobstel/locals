@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Button, Table, Typography, Steps } from "antd";
+import { Button, Typography, Row, Col } from "antd";
 
 import { useSelector, useDispatch } from "react-redux";
+import Form from "antd/lib/form/Form";
 import useBrand from "../config/useBrand";
-import Money from "../utils/cents";
-import { formatMoney } from "../utils/accounting";
+import { Cart } from "./basket/Cart";
 
 enum OrderStep {
   basket = 0,
@@ -13,68 +13,21 @@ enum OrderStep {
   ready = 3,
 }
 
-type TableDataItem = LineItem & {
-  total: Money;
-  priceStr: string;
-  totalStr: string;
-};
-
-const TableColumns = [
-  {
-    title: "Nazwa",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Ilość",
-    dataIndex: "count",
-    key: "count",
-  },
-  {
-    title: "Cena jd.",
-    dataIndex: "priceStr",
-    key: "priceStr",
-  },
-  {
-    title: "Wartość",
-    dataIndex: "totalStr",
-    key: "totalStr",
-  },
+const Steps = [
+  { name: "Koszyk" },
+  { name: "Dane" },
+  { name: "Płatność" },
+  { name: "Gotowe" },
 ];
-
-const Summary: React.FC<{ data: TableDataItem[] }> = ({ data }) => {
-  const { Text } = Typography;
-
-  const sum = data.reduce(
-    (accum, item) => {
-      accum.count = accum.count + item.count;
-      accum.total = accum.total.add(item.total);
-      return accum;
-    },
-    {
-      count: 0,
-      total: Money.cents(0),
-    }
-  );
-
-  return (
-    <tr>
-      <th>Podsumowanie</th>
-      <td>
-        <Text strong>{sum.count}</Text>
-      </td>
-      <td></td>
-      <td>
-        <Text strong>{formatMoney(sum.total)}</Text>
-      </td>
-    </tr>
-  );
-};
 
 export default function Basket() {
   const dispatch = useDispatch();
+
   const [currentStep, setStep] = useState(OrderStep.basket);
+
   const brand = useBrand();
+
+  const onBackClick = () => setStep(currentStep - 1);
   const onPublishClick = () => {
     // dispatch({ type: "CREATE_ORDER", id: brand.id });
     setStep(currentStep + 1);
@@ -84,43 +37,45 @@ export default function Basket() {
     (state: any) => state.basket.items
   ) as LineItem[];
 
+  const canGoBack = currentStep > 0;
   const isEmpty = lineItems.length === 0;
 
-  const dataSource = (lineItems || []).map((item) => {
-    const price = Money.from(item.price);
-    const total = price.times(item.count);
-    console.log(price, item.price, item.count, total);
-    return {
-      ...item,
-      total,
-      priceStr: formatMoney(price),
-      totalStr: formatMoney(total),
-    } as TableDataItem;
-  });
-
-  const { Step } = Steps;
+  const { Text } = Typography;
 
   return (
-    <div className="tw-pt-2">
-      <Steps current={currentStep} progressDot={(dot) => dot} size="small">
-        <Step title="Koszyk" />
-        <Step title="Dane" />
-        <Step title="Płatność" />
-        <Step title="Gotowe" />
-      </Steps>
-      <Table
-        dataSource={dataSource}
-        columns={TableColumns}
-        pagination={false}
-        summary={(pageData) => {
-          if (isEmpty) {
-            return null;
-          }
-          return <Summary data={pageData} />;
-        }}
-      />
+    <div>
+      <Row className="tw-py-2 tw-text-center" align="middle">
+        <Col flex={1}>
+          <Text type="secondary">
+            {currentStep > 0 && Steps[currentStep - 1].name}
+          </Text>
+        </Col>
+        <Col flex={3}>
+          <Text className="tw-text-xl"> {Steps[currentStep].name}</Text>
+        </Col>
+        <Col flex={1}>
+          <Text type="secondary">
+            {currentStep < Steps.length && Steps[currentStep + 1].name}
+          </Text>
+        </Col>
+      </Row>
+
+      {currentStep == 0 && <Cart items={lineItems} />}
+
+      {currentStep == 1 && <Form />}
+
       <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-end">
-        <Button type="primary" disabled={isEmpty} onClick={onPublishClick}>
+        {canGoBack && (
+          <Button className="tw-mr-2" shape="round" onClick={onBackClick}>
+            Wróć
+          </Button>
+        )}
+        <Button
+          type="primary"
+          shape="round"
+          disabled={isEmpty}
+          onClick={onPublishClick}
+        >
           Zamów
         </Button>
       </div>

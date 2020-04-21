@@ -18,22 +18,25 @@ type OrderSummary = {
   total: number;
 };
 
+type Client = {
+  firstname: string;
+  lastname: string;
+  addressLine1: string;
+  addressLine2?: string;
+  postal: string;
+  city: string;
+  state: string;
+  country: string;
+  email: string;
+};
+
 type Order = {
   number: string;
   createdAt: number;
   brand: {
     name: string;
   };
-  client: {
-    firstname: string;
-    lastname: string;
-    addressLine1: string;
-    addressLine2?: string;
-    postal: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  client: Client;
   items: OrderItem[];
   summary: OrderSummary;
 };
