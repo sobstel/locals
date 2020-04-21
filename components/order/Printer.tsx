@@ -1,4 +1,6 @@
 import React from "react";
+import Money from "../../utils/cents";
+import { formatMoney } from "../../utils/accounting";
 export class OrderPrinter extends React.PureComponent<{ order: Order }> {
   render() {
     const {
@@ -82,9 +84,9 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
             {items.map((item) => (
               <tr key={`${item.name}`} className="item">
                 <td>{item.name}</td>
-                <td>{item.price}</td>
+                <td>{formatMoney(item.price)}</td>
                 <td>{item.count}</td>
-                <td>{item.total}</td>
+                <td>{formatMoney(Money.from(item.price).times(item.count))}</td>
               </tr>
             ))}
 

@@ -2,6 +2,8 @@ import { Button, List } from "antd";
 import { useSelector } from "react-redux";
 
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import Money from "../../utils/cents";
+import { formatMoney } from "../../utils/accounting";
 
 export default function Product(props: {
   id: string;
@@ -58,7 +60,7 @@ export default function Product(props: {
       {inBasket && (
         <span className="tw-mr-2 tw-font-bold">{lineItem.count} x</span>
       )}
-      <div>{product.price.toFixed(2)} zł</div>
+      <div>{formatMoney(Money.from(product.price))}</div>
     </List.Item>
   );
 }
