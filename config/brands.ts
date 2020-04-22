@@ -1,3 +1,5 @@
+import { S3 } from "aws-sdk";
+
 const brands: { [key: string]: Brand } = {
   demo: {
     name: "Demo",

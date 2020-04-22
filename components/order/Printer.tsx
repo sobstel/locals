@@ -38,15 +38,13 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                 <table>
                   <tr>
                     <td>
-                      Fabristic
+                      {brand.name}
                       <br />
-                      The Pirate Cat
+                      Przykładowa, 9/11
                       <br />
-                      Pilsudskiego, 91/20
+                      1234 Przykładowo, Poland
                       <br />
-                      42400 Zawiercie, Poland
-                      <br />
-                      PL6492127754
+                      PL6490001122
                     </td>
 
                     <td>

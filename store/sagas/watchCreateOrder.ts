@@ -26,16 +26,7 @@ function* createOrder(action) {
     number: "1",
     createdAt: Date.now(),
     brand: { name: brand && brand.name },
-    client: {
-      firstname: "Matt",
-      lastname: "Matejczyk",
-      addressLine1: "Gdzieś Tam 0/Inf",
-      city: "Zahoryzoncie",
-      country: "PL",
-      postal: "00-666",
-      state: "SL",
-      email: "test@test.com",
-    },
+    client: action.client,
     items: (items || []).map((item) => ({
       ...item,
       total: Money.from(item.price).times(item.count).cents,

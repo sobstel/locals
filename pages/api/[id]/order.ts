@@ -3,7 +3,7 @@ import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
 
-const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
+const Bucket = "locals-orders-store";
 
 // TODO: ensure it's POST only
 export default async (req: NowRequest, res: NowResponse) => {
@@ -25,7 +25,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     const html = req.body.order;
     await s3
       .putObject({
-        Bucket: "locals-store",
+        Bucket: Bucket,
         Key: documentKey,
         Body: html,
         ACL: "public-read",
@@ -39,8 +39,10 @@ export default async (req: NowRequest, res: NowResponse) => {
     console.error(err);
   }
 
+  const baseUrl = `https://${Bucket}.s3.amazonaws.com`;
+
   res.json({
     done: true,
-    url: `${STORAGE_BASE_URL}/${documentKey}`,
+    url: `${baseUrl}/${documentKey}`,
   });
 };
