@@ -5,9 +5,15 @@ import { NowRequest, NowResponse } from "@now/node";
 
 const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
 
-// TODO: ensure it's POST only
 export default async (req: NowRequest, res: NowResponse) => {
   const id = req.query.id as string;
+
+  if (req.method !== "POST" || !id) {
+    res.status(400);
+    res.json({ done: false });
+    return;
+  }
+
   const prefix = id;
 
   const s3 = new aws.S3({
