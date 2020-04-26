@@ -2,13 +2,15 @@ import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
+import brands from "../../../config/brands";
 
 const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
 
 export default async (req: NowRequest, res: NowResponse) => {
   const id = req.query.id as string;
+  const validId = id && brands[id];
 
-  if (req.method !== "POST" || !id) {
+  if (req.method !== "POST" || !validId) {
     res.status(400);
     res.json({ done: false });
     return;
