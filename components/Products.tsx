@@ -17,7 +17,7 @@ export default function Products() {
   useEffect(() => {
     // TODO: how to reload products? as they remembered by redux-persist
     if (!groupedProducts || groupedProducts.length === 0) {
-      dispatch({ type: "FETCH_PRODUCTS", id: config.id });
+      dispatch({ type: "FETCH_PRODUCTS" });
     }
   }, [dispatch]);
 
