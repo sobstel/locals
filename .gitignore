@@ -30,7 +30,12 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# now/vercel
 .now
+.vercel
 
-#vsc
+# vsc
 *.code-workspace
+
+# config
+config/config.local.ts
