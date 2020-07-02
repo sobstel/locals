@@ -2,7 +2,7 @@ import defaultConfig from "./config.default";
 
 function localConfig() {
   try {
-    return import("./config.local");
+    return require("./config.local");
   } catch (e) {
     return {};
   }
