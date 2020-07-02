@@ -44,7 +44,7 @@ export default function Basket() {
 
   const onBackClick = () => setStepIndex(stepIndex - 1);
   const onPublishClick = () => {
-    // dispatch({ type: "CREATE_ORDER", brandId: brand.id });
+    // dispatch({ type: "CREATE_ORDER" });
     if (currentStep.onLeave) {
       currentStep.onLeave();
     }

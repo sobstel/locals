@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Collapse, List } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import useBrand from "../config/useBrand";
+import config from "../config";
 import Loading from "./shared/Loading";
 import Product from "./products/Product";
 
@@ -13,12 +13,11 @@ export default function Products() {
     (state: any) => state.products.groupedProducts
   );
   const loading = useSelector((state: any) => state.loading.fetchProducts);
-  const brand = useBrand();
 
   useEffect(() => {
     // TODO: how to reload products? as they remembered by redux-persist
     if (!groupedProducts || groupedProducts.length === 0) {
-      dispatch({ type: "FETCH_PRODUCTS", id: brand.id });
+      dispatch({ type: "FETCH_PRODUCTS" });
     }
   }, [dispatch]);
 

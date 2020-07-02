@@ -2,21 +2,19 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
 import { select, takeLatest, call, put } from "redux-saga/effects";
-import getBrand from "../../config/getBrand";
 import { OrderPrinter } from "../../components/order/Printer";
 import Money from "../../utils/cents";
+import config from "../../config";
 
 async function fetchTemplate() {
   const response = await axios.get("/data/order.template.html");
   return response.data;
 }
 
-function* createOrder(action) {
+function* createOrder() {
   const items = (yield select((state) => state.basket.items)) as LineItem[];
   const template = yield call(fetchTemplate);
 
-  const brand = getBrand(action.brandId);
-  // TODO: check if brand exixts and yield error if not
   const subtotal = items.reduce(
     (sum, item) => sum.add(Money.from(item.price).times(item.count)),
     Money.cents(0)
@@ -25,7 +23,7 @@ function* createOrder(action) {
   const order = {
     number: "1",
     createdAt: Date.now(),
-    brand: { name: brand && brand.name },
+    brand: { name: config.name },
     client: {
       firstname: "Matt",
       lastname: "Matejczyk",
@@ -56,9 +54,7 @@ function* createOrder(action) {
   const orderHtml = template.replace("%CONTENT%", markup);
 
   const { url } = yield axios
-    .post(`/api/${brand && brand.id}/order`, {
-      order: orderHtml,
-    })
+    .post(`/api/order`, { order: orderHtml })
     .then((response) => response.data);
 
   yield put({ type: "ORDER_CREATED", order: { url } });

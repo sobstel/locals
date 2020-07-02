@@ -2,21 +2,18 @@ import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
-import brands from "../../../config/brands";
+import config from "../../config";
 
 const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const id = req.query.id as string;
-  const validId = id && brands[id];
-
-  if (req.method !== "POST" || !validId) {
+  if (req.method !== "POST") {
     res.status(400);
     res.json({ done: false });
     return;
   }
 
-  const prefix = id;
+  const prefix = config.id;
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
@@ -39,7 +36,7 @@ export default async (req: NowRequest, res: NowResponse) => {
         ACL: "public-read",
         ContentType: "text/html",
         Metadata: {
-          brand: id,
+          brand: config.id,
         },
       })
       .promise();
