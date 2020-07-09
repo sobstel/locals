@@ -8,11 +8,11 @@ const ClientInfo: React.FC<{ client: Client }> = ({ client }) => (
       {client.firstname} {client.lastname}
     </div>
     <div className="tw-text-gray-800">
-      <span>{client.addressLine1}</span>
-      {client.addressLine2 && <div>{client.addressLine2}</div>}
+      <span>{client.address.addressLine1}</span>
+      {client.address.addressLine2 && <div>{client.address.addressLine2}</div>}
     </div>
     <div className="tw-text-gray-800">
-      {client.city}, {client.postal}
+      {client.address.city}, {client.address.postal}
     </div>
   </div>
 );
