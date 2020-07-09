@@ -4,7 +4,7 @@ import { Button, Typography, Row, Col } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 
 import { clientIsValid } from "../utils/client";
-import useBrand from "../config/useBrand";
+import config from "../config";
 import { Cart } from "./basket/Cart";
 import { Form } from "./basket/Form";
 import { Summary } from "./basket/Summary";
@@ -24,7 +24,6 @@ export default function Basket() {
     (state: any) => state.basket.items
   ) as LineItem[];
 
-  const brand = useBrand();
   const [stepIndex, setStepIndex] = useState(OrderStep.basket);
   const [client, setClient] = useState<Client>(lastClient);
 
@@ -52,7 +51,7 @@ export default function Basket() {
     setStepIndex(stepIndex + 1);
   };
   const onOrder = () => {
-    dispatch({ type: "CREATE_ORDER", brandId: brand.id, client });
+    dispatch({ type: "CREATE_ORDER", brandId: config.id, client });
   };
 
   const canGoBack = stepIndex == OrderStep.form;

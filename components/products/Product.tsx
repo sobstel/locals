@@ -28,6 +28,11 @@ export default function Product(props: {
   });
 
   const inBasket = lineItem != null;
+  const priceMoney = Money.from(product.price);
+
+  if (!priceMoney) {
+    return null;
+  }
 
   return (
     <List.Item
@@ -58,7 +63,7 @@ export default function Product(props: {
             <div className="tw-float-left">{product.name}</div>
             <div className="tw-float-right">
               {inBasket && <span className="tw-mr-1">{lineItem.count} x</span>}
-              <span>{formatMoney(Money.from(product.price))}</span>
+              <span>{formatMoney(priceMoney)}</span>
             </div>
           </div>
         }

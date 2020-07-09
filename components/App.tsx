@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, Menu } from "antd";
-import useBrand from "../config/useBrand";
+import config from "../config";
 
 import Products from "../components/Products";
 import Basket from "../components/Basket";
@@ -19,11 +19,10 @@ export default function App() {
     ({ key }) => dispatch({ type: "NAVIGATE_TO", menuItemKey: key }),
     [dispatch]
   );
-  const brand = useBrand();
 
   const MENU_ITEMS = {
     products: {
-      name: brand.name,
+      name: config.name,
       button: null,
       component: Products,
     },

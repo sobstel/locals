@@ -1,16 +1,30 @@
 import React from "react";
 import Money from "../../utils/cents";
 import { formatMoney } from "../../utils/accounting";
+import config from "../../config";
+
 export class OrderPrinter extends React.PureComponent<{ order: Order }> {
   render() {
-    const {
-      number,
-      createdAt,
-      brand,
-      client,
-      items,
-      summary,
-    } = this.props.order;
+    const { number, createdAt, client, items, summary } = this.props.order;
+
+    const printAddress = (address: Address) =>
+      address && (
+        <>
+          {address.addressLine1}
+          <br />
+          {address.addressLine2 && (
+            <>
+              {address.addressLine2}
+              <br />
+            </>
+          )}
+          {address.postal}, {address.city}
+          <br />
+          {address.state && <>{address.state},</>}
+          {address.country}
+        </>
+      );
+
     return (
       <div className="invoice-wrap">
         <div className="invoice-box">
@@ -38,30 +52,15 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                 <table>
                   <tr>
                     <td>
-                      {brand.name}
+                      {config.name}
                       <br />
-                      Przykładowa, 9/11
-                      <br />
-                      1234 Przykładowo, Poland
-                      <br />
-                      PL6490001122
+                      {printAddress(config.address)}
                     </td>
 
                     <td>
                       {client.firstname}&nbsp;{client.lastname}
                       <br />
-                      {client.addressLine1}
-                      <br />
-                      {client.addressLine2 && (
-                        <>
-                          {client.addressLine2}
-                          <br />
-                        </>
-                      )}
-                      {client.postal}, {client.city}
-                      <br />
-                      {client.state && <>{client.state},</>}
-                      {client.country}
+                      {printAddress(client.address)}
                     </td>
                   </tr>
                 </table>

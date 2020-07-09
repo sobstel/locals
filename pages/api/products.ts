@@ -1,21 +1,15 @@
 import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
-import getBrand from "../../../config/getBrand";
+import config from "../../config";
 
 // TODO: catch error
 export default async (req: NowRequest, res: NowResponse) => {
-  const brand = getBrand(req.query.id as string);
-  if (!brand) {
-    res.json("");
-    return;
-  }
-
   const sheets = google.sheets("v4");
   const result = await sheets.spreadsheets.values.get({
     auth: process.env.GOOGLE_API_KEY,
-    spreadsheetId: brand.spreadsheet.id,
-    range: brand.spreadsheet.range,
+    spreadsheetId: config.spreadsheet.id,
+    range: config.spreadsheet.range,
   });
 
   const rows = result.data.values as string[][];

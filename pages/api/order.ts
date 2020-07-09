@@ -2,13 +2,18 @@ import moment from "moment";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
+import config from "../../config";
 
 const Bucket = "locals-orders-store";
 
-// TODO: ensure it's POST only
 export default async (req: NowRequest, res: NowResponse) => {
-  const id = req.query.id as string;
-  const prefix = id;
+  if (req.method !== "POST") {
+    res.status(400);
+    res.json({ done: false });
+    return;
+  }
+
+  const prefix = config.id;
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
@@ -31,7 +36,7 @@ export default async (req: NowRequest, res: NowResponse) => {
         ACL: "public-read",
         ContentType: "text/html",
         Metadata: {
-          brand: id,
+          brand: config.id,
         },
       })
       .promise();

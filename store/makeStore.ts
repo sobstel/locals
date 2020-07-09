@@ -3,6 +3,7 @@ import createSagaMiddleware from "redux-saga";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { MakeStoreOptions } from "next-redux-wrapper";
+import config from "../config";
 import rootReducer from "./reducers";
 import rootSaga from "./sagas";
 
@@ -21,18 +22,13 @@ export default function makeStore(
   store = createStore(rootReducer, initialState, middlewares);
 
   if (!isServer) {
-    // SMELL: hack to get a brand id
-    const key = window.location.pathname.slice(1).replace(/\/$/, "");
+    const persistedReducer = persistReducer(
+      { key: config.id, storage, whitelist: ["basket", "orders"] },
+      rootReducer
+    );
 
-    if (key) {
-      const persistedReducer = persistReducer(
-        { key, storage, whitelist: ["basket", "orders"] },
-        rootReducer
-      );
-
-      store = createStore(persistedReducer, initialState, middlewares);
-      persistStore(store);
-    }
+    store = createStore(persistedReducer, initialState, middlewares);
+    persistStore(store);
   }
 
   sagaMiddleware.run(rootSaga);

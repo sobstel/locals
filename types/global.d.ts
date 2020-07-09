@@ -1,6 +1,7 @@
 type Brand = {
   id?: string;
   name: string;
+  address: Address;
   spreadsheet: {
     id: string;
     range: string;
@@ -28,24 +29,27 @@ type OrderSummary = {
   total: number;
 };
 
-type Client = {
-  firstname: string;
-  lastname: string;
+type Address = {
   addressLine1: string;
   addressLine2?: string;
   postal: string;
   city: string;
   state: string;
   country: string;
+};
+
+type Client = {
+  firstname: string;
+  lastname: string;
   email: string;
+  delivery: "postal" | "pickup";
+  phone?: string;
+  address: Address;
 };
 
 type Order = {
   number: string;
   createdAt: number;
-  brand: {
-    name: string;
-  };
   client: Client;
   items: OrderItem[];
   summary: OrderSummary;
