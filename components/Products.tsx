@@ -15,11 +15,10 @@ export default function Products() {
   const loading = useSelector((state: any) => state.loading.fetchProducts);
 
   useEffect(() => {
-    // TODO: how to reload products? as they remembered by redux-persist
     if (!groupedProducts || groupedProducts.length === 0) {
       dispatch({ type: "FETCH_PRODUCTS" });
     }
-  }, [dispatch]);
+  }, []);
 
   // TODO: how to useCallback for a loop?
   const modifyBasket = (product: Product, op: string) =>
