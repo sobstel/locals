@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
+import moment from "moment";
 import { select, takeLatest, call, put } from "redux-saga/effects";
-import cuid from "cuid";
 
 import { OrderPrinter } from "../../components/order/Printer";
 import Money from "../../utils/cents";
@@ -18,19 +18,21 @@ function* createOrder(action) {
   const template = yield call(fetchTemplate);
 
   const subtotal = items.reduce(
-    (sum, item) => sum.add(Money.from(item.price).times(item.count)),
+    (sum, item) => sum.add(Money.cents(item.price).times(item.count)),
     Money.cents(0)
   );
 
+  console.log(items);
+
   const order = {
-    number: cuid(),
-    createdAt: Date.now(),
+    number: moment().format("DDMMYYhms"),
+    createdAt: moment().unix(),
     brand: { name: config.name },
     client: action.client,
     items: (items || []).map((item) => ({
       ...item,
-      total: Money.from(item.price).times(item.count).cents,
-      price: Money.from(item.price).cents,
+      total: Money.cents(item.price).times(item.count).cents,
+      price: Money.cents(item.price).cents,
     })),
     summary: {
       subtotal: subtotal.cents,
