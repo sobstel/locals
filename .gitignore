@@ -38,4 +38,4 @@ yarn-error.log*
 *.code-workspace
 
 # config
-config/config.local.ts
+config/config.local.*

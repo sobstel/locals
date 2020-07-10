@@ -1,14 +1,20 @@
 import produce from "immer";
 
+type Order = {
+  url?: string;
+  order: string;
+  timestamp: number;
+};
+
 type State = {
-  items: { url: string }[];
+  items: Order[];
   client?: Client;
 };
 
 type Action =
   | {
       type: "ORDER_CREATED";
-      order: { url: string };
+      order: Order;
     }
   | {
       type: "SAVE_CLIENT";

@@ -22,12 +22,10 @@ function* createOrder(action) {
     Money.cents(0)
   );
 
-  console.log(items);
-
   const order = {
     number: moment().format("DDMMYYhms"),
     createdAt: moment().unix(),
-    brand: { name: config.name },
+    brand: { id: config.id, name: config.name },
     client: action.client,
     items: (items || []).map((item) => ({
       ...item,
@@ -49,10 +47,13 @@ function* createOrder(action) {
   const orderHtml = template.replace("%CONTENT%", markup);
 
   const { url } = yield axios
-    .post(`/api/order`, { order: orderHtml })
+    .post(`/api/order`, { client: action.client, order: orderHtml })
     .then((response) => response.data);
 
-  yield put({ type: "ORDER_CREATED", order: { url } });
+  yield put({
+    type: "ORDER_CREATED",
+    order: { url, timestamp: Date.now(), order: JSON.stringify(order) },
+  });
 
   yield put({ type: "CLEAR_BASKET" });
 

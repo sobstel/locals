@@ -3,6 +3,7 @@ import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
 import config from "../../config";
+import { mbSendEmail } from "./email";
 
 const Bucket = "locals-orders-store";
 
@@ -13,7 +14,27 @@ export default async (req: NowRequest, res: NowResponse) => {
     return;
   }
 
+  const html = req.body.order;
+
   const prefix = config.id;
+
+  if (process.env.MAILER === "MG") {
+    const r = await mbSendEmail(
+      req.body.client.email,
+      "Nowe zamówienie w sklepie",
+      html
+    );
+    if (r) {
+      res.json({
+        done: true,
+        id: r.id,
+      });
+    } else {
+      res.status(400);
+      res.json({ done: false });
+    }
+    return;
+  }
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
@@ -27,7 +48,6 @@ export default async (req: NowRequest, res: NowResponse) => {
   )}/${uid}.html`;
 
   try {
-    const html = req.body.order;
     await s3
       .putObject({
         Bucket: Bucket,
