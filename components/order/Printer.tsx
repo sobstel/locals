@@ -1,16 +1,31 @@
 import React from "react";
+import moment from "moment";
 import Money from "../../utils/cents";
 import { formatMoney } from "../../utils/accounting";
+import config from "../../config";
+
 export class OrderPrinter extends React.PureComponent<{ order: Order }> {
   render() {
-    const {
-      number,
-      createdAt,
-      brand,
-      client,
-      items,
-      summary,
-    } = this.props.order;
+    const { number, createdAt, client, items, summary } = this.props.order;
+
+    const printAddress = (address: Address) =>
+      address && (
+        <>
+          {address.addressLine1}
+          <br />
+          {address.addressLine2 && (
+            <>
+              {address.addressLine2}
+              <br />
+            </>
+          )}
+          {address.postal}, {address.city}
+          <br />
+          {address.state && <>{address.state},</>}
+          {address.country}
+        </>
+      );
+
     return (
       <div className="invoice-wrap">
         <div className="invoice-box">
@@ -26,7 +41,7 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                     <td>
                       Zamówienie #: {number}
                       <br />
-                      Data: {createdAt}
+                      Data: {moment.unix(createdAt).format("LL")}
                     </td>
                   </tr>
                 </table>
@@ -38,32 +53,15 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                 <table>
                   <tr>
                     <td>
-                      Fabristic
+                      {config.name}
                       <br />
-                      The Pirate Cat
-                      <br />
-                      Pilsudskiego, 91/20
-                      <br />
-                      42400 Zawiercie, Poland
-                      <br />
-                      PL6492127754
+                      {printAddress(config.address)}
                     </td>
 
                     <td>
                       {client.firstname}&nbsp;{client.lastname}
                       <br />
-                      {client.addressLine1}
-                      <br />
-                      {client.addressLine2 && (
-                        <>
-                          {client.addressLine2}
-                          <br />
-                        </>
-                      )}
-                      {client.postal}, {client.city}
-                      <br />
-                      {client.state && <>{client.state},</>}
-                      {client.country}
+                      {printAddress(client.address)}
                     </td>
                   </tr>
                 </table>
@@ -84,9 +82,11 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
             {items.map((item) => (
               <tr key={`${item.name}`} className="item">
                 <td>{item.name}</td>
-                <td>{formatMoney(item.price)}</td>
+                <td>{formatMoney(Money.cents(item.price))}</td>
                 <td>{item.count}</td>
-                <td>{formatMoney(Money.from(item.price).times(item.count))}</td>
+                <td>
+                  {formatMoney(Money.cents(item.price).times(item.count))}
+                </td>
               </tr>
             ))}
 
@@ -96,26 +96,26 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                 <table>
                   <tr>
                     <td>Podsumowanie:</td>
-                    <td>{summary.subtotal}</td>
+                    <td>{formatMoney(Money.cents(summary.subtotal))}</td>
                   </tr>
 
                   {summary.shipping && (
                     <tr>
                       <td>Dostawa:</td>
-                      <td>{summary.shipping}</td>
+                      <td>{formatMoney(Money.cents(summary.shipping))}</td>
                     </tr>
                   )}
 
                   {summary.tax && (
                     <tr>
                       <td>Podatek:</td>
-                      <td>{summary.tax}</td>
+                      <td>{formatMoney(Money.cents(summary.tax))}</td>
                     </tr>
                   )}
 
                   <tr>
                     <td>Do zapłaty:</td>
-                    <td>{summary.total}</td>
+                    <td>{formatMoney(Money.cents(summary.total))}</td>
                   </tr>
                 </table>
               </td>

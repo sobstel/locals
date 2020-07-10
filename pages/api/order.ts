@@ -3,8 +3,9 @@ import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
 import config from "../../config";
+import { mbSendEmail } from "./email";
 
-const STORAGE_BASE_URL = "https://locals-store.s3.eu-central-1.amazonaws.com";
+const Bucket = "locals-orders-store";
 
 export default async (req: NowRequest, res: NowResponse) => {
   if (req.method !== "POST") {
@@ -13,7 +14,27 @@ export default async (req: NowRequest, res: NowResponse) => {
     return;
   }
 
+  const html = req.body.order;
+
   const prefix = config.id;
+
+  if (process.env.MAILER === "MG") {
+    const r = await mbSendEmail(
+      req.body.client.email,
+      "Nowe zamówienie w sklepie",
+      html
+    );
+    if (r) {
+      res.json({
+        done: true,
+        id: r.id,
+      });
+    } else {
+      res.status(400);
+      res.json({ done: false });
+    }
+    return;
+  }
 
   const s3 = new aws.S3({
     accessKeyId: process.env.AMZ_ACCESS_KEY,
@@ -27,10 +48,9 @@ export default async (req: NowRequest, res: NowResponse) => {
   )}/${uid}.html`;
 
   try {
-    const html = req.body.order;
     await s3
       .putObject({
-        Bucket: "locals-store",
+        Bucket: Bucket,
         Key: documentKey,
         Body: html,
         ACL: "public-read",
@@ -44,8 +64,10 @@ export default async (req: NowRequest, res: NowResponse) => {
     console.error(err);
   }
 
+  const baseUrl = `https://${Bucket}.s3.amazonaws.com`;
+
   res.json({
     done: true,
-    url: `${STORAGE_BASE_URL}/${documentKey}`,
+    url: `${baseUrl}/${documentKey}`,
   });
 };

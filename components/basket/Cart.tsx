@@ -54,7 +54,7 @@ const TableSummary: React.FC<{ data: TableDataItem[] }> = ({ data }) => {
 
 export const Cart: React.FC<{ items: LineItem[] }> = ({ items }) => {
   const dataSource = (items || []).map((item) => {
-    const price = Money.from(item.price);
+    const price = Money.cents(item.price);
     const total = price.times(item.count);
     return {
       ...item,

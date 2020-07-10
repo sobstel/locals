@@ -8,25 +8,26 @@ const ClientInfo: React.FC<{ client: Client }> = ({ client }) => (
       {client.firstname} {client.lastname}
     </div>
     <div className="tw-text-gray-800">
-      <span>{client.addressLine1}</span>
-      {client.addressLine1 && <div>{client.addressLine1}</div>}
+      <span>{client.address.addressLine1}</span>
+      {client.address.addressLine2 && <div>{client.address.addressLine2}</div>}
     </div>
     <div className="tw-text-gray-800">
-      {client.city}, {client.postal}
+      {client.address.city}, {client.address.postal}
     </div>
   </div>
 );
 
-export const Summary: React.FC<{ items: LineItem[]; client?: Client }> = ({
-  items,
-  client,
-}) => {
+export const Summary: React.FC<{
+  items: LineItem[];
+  client?: Client;
+  onOrder: () => void;
+}> = ({ items, client, onOrder }) => {
   return (
     <div>
       <ClientInfo client={client} />
       <Cart items={items} />
       <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-center">
-        <Button type="primary" shape="round">
+        <Button type="primary" shape="round" onClick={() => onOrder()}>
           Zamów
         </Button>
       </div>

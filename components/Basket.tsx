@@ -4,6 +4,7 @@ import { Button, Typography, Row, Col } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 
 import { clientIsValid } from "../utils/client";
+import config from "../config";
 import { Cart } from "./basket/Cart";
 import { Form } from "./basket/Form";
 import { Summary } from "./basket/Summary";
@@ -43,12 +44,14 @@ export default function Basket() {
   const currentStep = Steps[stepIndex];
 
   const onBackClick = () => setStepIndex(stepIndex - 1);
-  const onPublishClick = () => {
-    // dispatch({ type: "CREATE_ORDER" });
+  const onNextClick = () => {
     if (currentStep.onLeave) {
       currentStep.onLeave();
     }
     setStepIndex(stepIndex + 1);
+  };
+  const onOrder = () => {
+    dispatch({ type: "CREATE_ORDER", brandId: config.id, client });
   };
 
   const canGoBack = stepIndex == OrderStep.form;
@@ -85,7 +88,7 @@ export default function Basket() {
         <Form client={client} onUpdate={setClient} />
       )}
       {stepIndex === OrderStep.confirm && (
-        <Summary client={client} items={lineItems} />
+        <Summary client={client} items={lineItems} onOrder={onOrder} />
       )}
 
       {stepIndex !== 2 && (
@@ -99,7 +102,7 @@ export default function Basket() {
             type={enableNextButton ? "primary" : "default"}
             shape="round"
             disabled={!enableNextButton}
-            onClick={onPublishClick}
+            onClick={onNextClick}
           >
             Zamów
           </Button>

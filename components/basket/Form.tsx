@@ -4,11 +4,14 @@ import { Col, Row, Form as AntForm, Input } from "antd";
 const DefaultClient: Client = {
   firstname: "",
   lastname: "",
-  addressLine1: "",
-  postal: "",
-  city: "",
-  state: "",
-  country: "PL",
+  address: {
+    addressLine1: "",
+    postal: "",
+    city: "",
+    state: "",
+    country: "PL",
+  },
+  delivery: "postal",
   email: "",
 };
 
@@ -21,7 +24,12 @@ export const Form: React.FC<{
   const client = { ...DefaultClient, ...(props.client || {}) };
 
   const updateClient = (field: string, value: string) => {
-    client[field] = value;
+    const path = field.split(".");
+    let obj = client;
+    while (path.length > 1) {
+      obj = obj[path.shift()];
+    }
+    obj[path.shift()] = value;
     props.onUpdate(client);
   };
 
@@ -43,7 +51,7 @@ export const Form: React.FC<{
                 rules={[
                   {
                     required: true,
-                    message: "Please input the captcha you got!",
+                    message: "Pole imie jest wymagane",
                   },
                 ]}
               >
@@ -61,7 +69,7 @@ export const Form: React.FC<{
                 rules={[
                   {
                     required: true,
-                    message: "Please input the captcha you got!",
+                    message: "Pole nazwisko jest wymagane",
                   },
                 ]}
               >
@@ -82,7 +90,7 @@ export const Form: React.FC<{
             rules={[
               {
                 required: true,
-                message: "Please input your nickname!",
+                message: "Prosze podać adres",
                 whitespace: true,
               },
             ]}
@@ -91,7 +99,7 @@ export const Form: React.FC<{
               {...commonInputProps}
               rows={2}
               placeholder="ul. Przykładowa 26/21"
-              onChange={onInputChange("addressLine1")}
+              onChange={onInputChange("address.addressLine1")}
             />
           </Item>
           <Row gutter={8}>
@@ -102,14 +110,14 @@ export const Form: React.FC<{
                 rules={[
                   {
                     required: true,
-                    message: "Please input the captcha you got!",
+                    message: "Prosze podać miasto",
                   },
                 ]}
               >
                 <Input
                   {...commonInputProps}
                   placeholder="Miasto"
-                  onChange={onInputChange("city")}
+                  onChange={onInputChange("address.city")}
                 />
               </Item>
             </Col>
@@ -120,14 +128,14 @@ export const Form: React.FC<{
                 rules={[
                   {
                     required: true,
-                    message: "Please input the captcha you got!",
+                    message: "Prosze podaj kod pocztowy",
                   },
                 ]}
               >
                 <Input
                   {...commonInputProps}
                   placeholder="00-00"
-                  onChange={onInputChange("postal")}
+                  onChange={onInputChange("address.postal")}
                 />
               </Item>
             </Col>
@@ -140,11 +148,11 @@ export const Form: React.FC<{
           rules={[
             {
               type: "email",
-              message: "The input is not valid E-mail!",
+              message: "To nie wygląda na poprawny email",
             },
             {
               required: true,
-              message: "Please input your E-mail!",
+              message: "Email jest nam potrzebny",
             },
           ]}
         >
