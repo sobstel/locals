@@ -26,16 +26,15 @@ export default function App() {
       button: null,
       component: Products,
     },
-    basket: {
-      name: "Koszyk",
-      button: BasketButton,
-      component: Basket,
-    },
     orders: {
       name: "Zamówienia",
       button: null,
       component: Orders,
-      hidden: true,
+    },
+    basket: {
+      name: "Koszyk",
+      button: BasketButton,
+      component: Basket,
     },
   };
 

@@ -54,3 +54,9 @@ type Order = {
   items: OrderItem[];
   summary: OrderSummary;
 };
+
+type PlacedOrder = {
+  url?: string;
+  order: string;
+  timestamp: number;
+};
