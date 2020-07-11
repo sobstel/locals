@@ -4,7 +4,7 @@ module.exports = {
     autoPrerender: false,
   },
   env: {
-    BRAND: process.env.BRAND,
+    ID: process.env.ID,
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     AMZ_ACCESS_KEY: process.env.AMZ_ACCESS_KEY,
     AMZ_SECRET_KEY: process.env.AMZ_SECRET_KEY,
