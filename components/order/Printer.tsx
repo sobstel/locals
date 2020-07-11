@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+import dayjs from "dayjs";
 import Money from "../../utils/cents";
 import { formatMoney } from "../../utils/accounting";
 import config from "../../config";
@@ -9,6 +9,7 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
     const { number, createdAt, client, items, summary } = this.props.order;
 
     const printAddress = (address: Address) =>
+      config.address &&
       address && (
         <>
           {address.addressLine1}
@@ -19,10 +20,9 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
               <br />
             </>
           )}
-          {address.postal}, {address.city}
+          {address.postal} {address.city}
           <br />
           {address.state && <>{address.state},</>}
-          {address.country}
         </>
       );
 
@@ -39,9 +39,9 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                     </td>
 
                     <td>
-                      Zamówienie #: {number}
+                      Zamówienie nr {number}
                       <br />
-                      Data: {moment.unix(createdAt).format("LL")}
+                      Data: {dayjs.unix(createdAt).format("DD-MM-YYYY HH:mm")}
                     </td>
                   </tr>
                 </table>
@@ -60,6 +60,8 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
 
                     <td>
                       {client.firstname}&nbsp;{client.lastname}
+                      <br />
+                      tel. {client.phone}
                       <br />
                       {printAddress(client.address)}
                     </td>
@@ -99,14 +101,14 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
                     <td>{formatMoney(Money.cents(summary.subtotal))}</td>
                   </tr>
 
-                  {summary.shipping && (
+                  {!!summary.shipping && (
                     <tr>
                       <td>Dostawa:</td>
                       <td>{formatMoney(Money.cents(summary.shipping))}</td>
                     </tr>
                   )}
 
-                  {summary.tax && (
+                  {!!summary.tax && (
                     <tr>
                       <td>Podatek:</td>
                       <td>{formatMoney(Money.cents(summary.tax))}</td>

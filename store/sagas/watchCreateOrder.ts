@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
-import moment from "moment";
+import dayjs from "dayjs";
 import { select, takeLatest, call, put } from "redux-saga/effects";
 
 import { OrderPrinter } from "../../components/order/Printer";
@@ -23,8 +23,8 @@ function* createOrder(action) {
   );
 
   const order = {
-    number: moment().format("DDMMYYhms"),
-    createdAt: moment().unix(),
+    number: dayjs().format("M/DDHHmm/ss"),
+    createdAt: dayjs().unix(),
     brand: { id: config.id, name: config.name },
     client: action.client,
     items: (items || []).map((item) => ({
@@ -47,7 +47,11 @@ function* createOrder(action) {
   const orderHtml = template.replace("%CONTENT%", markup);
 
   const { url } = yield axios
-    .post(`/api/order`, { client: action.client, order: orderHtml })
+    .post(`/api/order`, {
+      client: action.client,
+      orderHtml: orderHtml,
+      orderNumber: order.number,
+    })
     .then((response) => response.data);
 
   yield put({

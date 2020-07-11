@@ -1,19 +1,28 @@
 import React from "react";
 import { Button } from "antd";
+import config from "../../config";
 import { Cart } from "./Cart";
 
 const ClientInfo: React.FC<{ client: Client }> = ({ client }) => (
   <div className="tw-p-2 tw-text-right tw-bg-white">
     <div className="tw-font-semibold tw-mb-1">
       {client.firstname} {client.lastname}
+      <br />
+      tel. {client.phone}
     </div>
-    <div className="tw-text-gray-800">
-      <span>{client.address.addressLine1}</span>
-      {client.address.addressLine2 && <div>{client.address.addressLine2}</div>}
-    </div>
-    <div className="tw-text-gray-800">
-      {client.address.city}, {client.address.postal}
-    </div>
+    {config.address && (
+      <>
+        <div className="tw-text-gray-800">
+          <span>{client.address.addressLine1}</span>
+          {client.address.addressLine2 && (
+            <div>{client.address.addressLine2}</div>
+          )}
+        </div>
+        <div className="tw-text-gray-800">
+          {client.address.city}, {client.address.postal}
+        </div>
+      </>
+    )}
   </div>
 );
 

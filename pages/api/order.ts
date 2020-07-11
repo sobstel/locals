@@ -1,9 +1,9 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import cuid from "cuid";
 import aws from "aws-sdk";
 import { NowRequest, NowResponse } from "@now/node";
 import config from "../../config";
-import { mbSendEmail } from "./email";
+import { mbSendEmail } from "../../utils/email";
 
 const Bucket = "locals-orders-store";
 
@@ -14,15 +14,18 @@ export default async (req: NowRequest, res: NowResponse) => {
     return;
   }
 
-  const html = req.body.order;
+  // TODO: add more defensive checks
 
+  const { client, orderHtml, orderNumber } = req.body;
   const prefix = config.id;
 
   if (process.env.MAILER === "MG") {
     const r = await mbSendEmail(
-      req.body.client.email,
-      "Nowe zamówienie w sklepie",
-      html
+      config.email,
+      `[${prefix}] Zamówienie nr ${orderNumber}`,
+      orderHtml,
+      `${client.firstname} ${client.lastname}`,
+      client.email
     );
     if (r) {
       res.json({
@@ -43,9 +46,7 @@ export default async (req: NowRequest, res: NowResponse) => {
   });
 
   const uid = cuid();
-  const documentKey = `u/${prefix}/${moment().format(
-    "YYYY/MM/DD"
-  )}/${uid}.html`;
+  const documentKey = `u/${prefix}/${dayjs().format("YYYY/MM/DD")}/${uid}.html`;
 
   try {
     await s3

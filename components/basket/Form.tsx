@@ -1,5 +1,6 @@
 import React from "react";
 import { Col, Row, Form as AntForm, Input } from "antd";
+import config from "../../config";
 
 const DefaultClient: Client = {
   firstname: "",
@@ -12,6 +13,7 @@ const DefaultClient: Client = {
     country: "PL",
   },
   delivery: "postal",
+  phone: "",
   email: "",
 };
 
@@ -83,63 +85,82 @@ export const Form: React.FC<{
           </Row>
         </Item>
 
-        <Item>
-          <Item
-            name="addressLine1"
-            label="Adres dostawy"
-            rules={[
-              {
-                required: true,
-                message: "Prosze podać adres",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input.TextArea
-              {...commonInputProps}
-              rows={2}
-              placeholder="ul. Przykładowa 26/21"
-              onChange={onInputChange("address.addressLine1")}
-            />
+        {config.address && (
+          <Item>
+            <Item
+              name="addressLine1"
+              label="Adres"
+              rules={[
+                {
+                  required: true,
+                  message: "Prosze podać adres",
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input.TextArea
+                {...commonInputProps}
+                rows={2}
+                placeholder="ul. Przykładowa 26/21"
+                onChange={onInputChange("address.addressLine1")}
+              />
+            </Item>
+            <Row gutter={8}>
+              <Col span={16}>
+                <Item
+                  name="city"
+                  noStyle
+                  rules={[
+                    {
+                      required: true,
+                      message: "Prosze podać miasto",
+                    },
+                  ]}
+                >
+                  <Input
+                    {...commonInputProps}
+                    placeholder="Miasto"
+                    onChange={onInputChange("address.city")}
+                  />
+                </Item>
+              </Col>
+              <Col span={8}>
+                <Item
+                  name="postal"
+                  noStyle
+                  rules={[
+                    {
+                      required: true,
+                      message: "Prosze podaj kod pocztowy",
+                    },
+                  ]}
+                >
+                  <Input
+                    {...commonInputProps}
+                    placeholder="00-00"
+                    onChange={onInputChange("address.postal")}
+                  />
+                </Item>
+              </Col>
+            </Row>
           </Item>
-          <Row gutter={8}>
-            <Col span={16}>
-              <Item
-                name="city"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Prosze podać miasto",
-                  },
-                ]}
-              >
-                <Input
-                  {...commonInputProps}
-                  placeholder="Miasto"
-                  onChange={onInputChange("address.city")}
-                />
-              </Item>
-            </Col>
-            <Col span={8}>
-              <Item
-                name="postal"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Prosze podaj kod pocztowy",
-                  },
-                ]}
-              >
-                <Input
-                  {...commonInputProps}
-                  placeholder="00-00"
-                  onChange={onInputChange("address.postal")}
-                />
-              </Item>
-            </Col>
-          </Row>
+        )}
+
+        <Item
+          name="phone"
+          label="Telefon"
+          rules={[
+            {
+              type: "phone",
+              message: "To nie wygląda na poprawny telefon",
+            },
+            {
+              required: true,
+              message: "Telefon jest nam potrzebny",
+            },
+          ]}
+        >
+          <Input {...commonInputProps} onChange={onInputChange("phone")} />
         </Item>
 
         <Item
