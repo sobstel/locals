@@ -151,12 +151,9 @@ export const Form: React.FC<{
           label="Telefon"
           rules={[
             {
-              type: "phone",
-              message: "To nie wygląda na poprawny telefon",
-            },
-            {
               required: true,
-              message: "Telefon jest nam potrzebny",
+              message: "Prosze podać telefon",
+              whitespace: false,
             },
           ]}
         >

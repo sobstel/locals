@@ -1,11 +1,7 @@
-import defaultConfig from "./config.default";
+import defaultConfig from "./defaultConfig";
+import brandConfigs from "./brandConfigs";
 
-function localConfig() {
-  try {
-    return require("./config.local");
-  } catch (e) {
-    return {};
-  }
-}
+const id = process.env.ID;
+const brandConfig = brandConfigs.find((config) => config.id === id) || {};
 
-export default { ...defaultConfig, ...localConfig() };
+export default { ...defaultConfig, ...brandConfig };
