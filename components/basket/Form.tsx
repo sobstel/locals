@@ -44,46 +44,47 @@ export const Form: React.FC<{
   return (
     <div className="tw-px-2 tw-pt-3 tw-pb-1 tw-bg-white">
       <AntForm layout="vertical" size="middle" initialValues={client}>
-        <Item label="Imię i nazwisko" required>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Item
-                name="firstname"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Pole imie jest wymagane",
-                  },
-                ]}
-              >
-                <Input
-                  {...commonInputProps}
-                  placeholder="Przemek"
-                  onChange={onInputChange("firstname")}
-                />
-              </Item>
-            </Col>
-            <Col span={12}>
-              <Item
-                name="lastname"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Pole nazwisko jest wymagane",
-                  },
-                ]}
-              >
-                <Input
-                  {...commonInputProps}
-                  placeholder="Przykładowy"
-                  onChange={onInputChange("lastname")}
-                />
-              </Item>
-            </Col>
-          </Row>
-        </Item>
+        <Row gutter={8}>
+          <Col span={12}>
+            <Item
+              label="Imię"
+              required
+              name="firstname"
+              rules={[
+                {
+                  required: true,
+                  message: "Imię jest wymagane",
+                },
+              ]}
+            >
+              <Input
+                {...commonInputProps}
+                placeholder=""
+                onChange={onInputChange("firstname")}
+              />
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item
+              label="Nazwisko"
+              required
+              name="lastname"
+              rules={[
+                {
+                  required: true,
+                  message: "Nazwisko jest wymagane",
+                  whitespace: false,
+                },
+              ]}
+            >
+              <Input
+                {...commonInputProps}
+                placeholder=""
+                onChange={onInputChange("lastname")}
+              />
+            </Item>
+          </Col>
+        </Row>
 
         {config.address && (
           <Item>
@@ -93,7 +94,7 @@ export const Form: React.FC<{
               rules={[
                 {
                   required: true,
-                  message: "Prosze podać adres",
+                  message: "Adres jest wymagany",
                   whitespace: true,
                 },
               ]}
@@ -101,7 +102,7 @@ export const Form: React.FC<{
               <Input.TextArea
                 {...commonInputProps}
                 rows={2}
-                placeholder="ul. Przykładowa 26/21"
+                placeholder=""
                 onChange={onInputChange("address.addressLine1")}
               />
             </Item>
@@ -113,13 +114,13 @@ export const Form: React.FC<{
                   rules={[
                     {
                       required: true,
-                      message: "Prosze podać miasto",
+                      message: "Miasto jest wymagane",
                     },
                   ]}
                 >
                   <Input
                     {...commonInputProps}
-                    placeholder="Miasto"
+                    placeholder=""
                     onChange={onInputChange("address.city")}
                   />
                 </Item>
@@ -131,7 +132,7 @@ export const Form: React.FC<{
                   rules={[
                     {
                       required: true,
-                      message: "Prosze podaj kod pocztowy",
+                      message: "Kod pocztowy jest wymagany",
                     },
                   ]}
                 >
@@ -146,36 +147,43 @@ export const Form: React.FC<{
           </Item>
         )}
 
-        <Item
-          name="phone"
-          label="Telefon"
-          rules={[
-            {
-              required: true,
-              message: "Prosze podać telefon",
-              whitespace: false,
-            },
-          ]}
-        >
-          <Input {...commonInputProps} onChange={onInputChange("phone")} />
-        </Item>
-
-        <Item
-          name="email"
-          label="E-mail"
-          rules={[
-            {
-              type: "email",
-              message: "To nie wygląda na poprawny email",
-            },
-            {
-              required: true,
-              message: "Email jest nam potrzebny",
-            },
-          ]}
-        >
-          <Input {...commonInputProps} onChange={onInputChange("email")} />
-        </Item>
+        <Row gutter={8}>
+          <Col span={12}>
+            <Item
+              name="phone"
+              required
+              label="Telefon"
+              rules={[
+                {
+                  required: true,
+                  message: "Telefon jest wymagany",
+                  whitespace: false,
+                },
+              ]}
+            >
+              <Input {...commonInputProps} onChange={onInputChange("phone")} />
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item
+              name="email"
+              required
+              label="E-mail"
+              rules={[
+                {
+                  type: "email",
+                  message: "To nie jest poprawny adres e-mail",
+                },
+                {
+                  required: true,
+                  message: "Adres e-mail jest wymagany",
+                },
+              ]}
+            >
+              <Input {...commonInputProps} onChange={onInputChange("email")} />
+            </Item>
+          </Col>
+        </Row>
       </AntForm>
     </div>
   );
