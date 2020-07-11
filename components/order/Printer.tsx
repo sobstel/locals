@@ -52,11 +52,7 @@ export class OrderPrinter extends React.PureComponent<{ order: Order }> {
               <td colSpan={2}>
                 <table>
                   <tr>
-                    <td>
-                      {config.name}
-                      <br />
-                      {printAddress(config.address)}
-                    </td>
+                    <td>{config.name}</td>
 
                     <td>
                       {client.firstname}&nbsp;{client.lastname}

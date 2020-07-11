@@ -53,7 +53,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       .putObject({
         Bucket: Bucket,
         Key: documentKey,
-        Body: html,
+        Body: orderHtml,
         ACL: "public-read",
         ContentType: "text/html",
         Metadata: {
