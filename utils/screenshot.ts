@@ -3,7 +3,7 @@ import puppeteer from "puppeteer-core";
 
 function getViewport() {
   const A4 = [8.27, 11.7];
-  const dpi = 72;
+  const dpi = 150;
   return {
     deviceScaleFactor: 1,
     hasTouch: false,
