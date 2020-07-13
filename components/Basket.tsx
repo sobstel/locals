@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Typography, Row, Col } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -95,7 +94,12 @@ export default function Basket() {
         <Form client={client} onUpdate={setClient} />
       )}
       {stepIndex === OrderStep.confirm && (
-        <Summary client={client} items={lineItems} onOrder={onOrder} />
+        <Summary
+          client={client}
+          items={lineItems}
+          onOrder={onOrder}
+          isBusy={isBusy}
+        />
       )}
 
       {stepIndex !== 2 && (
@@ -108,11 +112,10 @@ export default function Basket() {
           <Button
             type={enableNextButton ? "primary" : "default"}
             shape="round"
-            disabled={isBusy || !enableNextButton}
+            disabled={!enableNextButton}
             onClick={onNextClick}
-            icon={isBusy ? <LoadingOutlined /> : null}
           >
-            {isBusy ? "Wysyłanie" : "Zamów"}
+            Zamów
           </Button>
         </div>
       )}
