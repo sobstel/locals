@@ -2,20 +2,14 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import axios from "axios";
 import dayjs from "dayjs";
-import { select, takeLatest, call, put } from "redux-saga/effects";
+import { select, takeLatest, put } from "redux-saga/effects";
 
-import { OrderPrinter } from "../../components/order/Printer";
 import Money from "../../utils/cents";
 import config from "../../config";
-
-async function fetchTemplate() {
-  const response = await axios.get("/data/order.template.html");
-  return response.data;
-}
+import { OrderTemplate } from "../../components/order/Template";
 
 function* createOrder(action) {
   const items = (yield select((state) => state.basket.items)) as LineItem[];
-  const template = yield call(fetchTemplate);
 
   const subtotal = items.reduce(
     (sum, item) => sum.add(Money.cents(item.price).times(item.count)),
@@ -40,11 +34,9 @@ function* createOrder(action) {
     },
   };
 
-  const markup = ReactDOMServer.renderToStaticMarkup(
-    React.createElement(OrderPrinter, { order })
+  const orderHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(OrderTemplate, { order, variant: "html" })
   );
-
-  const orderHtml = template.replace("%CONTENT%", markup);
 
   const { url } = yield axios
     .post(`/api/order`, {
@@ -56,7 +48,7 @@ function* createOrder(action) {
 
   yield put({
     type: "ORDER_CREATED",
-    order: { url, timestamp: Date.now(), order: JSON.stringify(order) },
+    order: { url, timestamp: dayjs().unix(), order: JSON.stringify(order) },
   });
 
   yield put({ type: "CLEAR_BASKET" });

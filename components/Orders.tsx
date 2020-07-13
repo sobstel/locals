@@ -1,46 +1,92 @@
-import { List, Button } from "antd";
+import { Table, Button, Typography } from "antd";
+import { LeftOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import Money from "../utils/cents";
 import { formatMoney } from "../utils/accounting";
 import { OrderTemplate } from "./order/Template";
+
+const getOrder = (placedOrder: PlacedOrder) =>
+  JSON.parse(placedOrder.order) as Order;
 
 export default function Basket() {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const placedOrders = useSelector(
+  let placedOrders = useSelector(
     (state: any) => state.orders.items
   ) as PlacedOrder[];
+  placedOrders = (placedOrders ?? []).sort(
+    (order1, order2) => order2.timestamp - order1.timestamp
+  );
+
+  const TableColumns = [
+    {
+      title: "Data",
+      dataIndex: "date",
+      key: "$date",
+      align: "left",
+      render: (_, record) => (
+        <Typography.Text type="secondary">
+          {dayjs.unix(record.timestamp).format("DD/MM/YYYY")}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Zamówienie",
+      dataIndex: "name",
+      key: "$name",
+      render: (_, record) => (
+        <Typography.Text strong copyable>
+          {getOrder(record).number}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Wartość",
+      dataIndex: "summary",
+      key: "$summary",
+      align: "right",
+      render: (_, record) => (
+        <div>{formatMoney(getOrder(record).summary.subtotal)}</div>
+      ),
+    },
+    {
+      title: "",
+      dataIndex: "preview",
+      key: "$preview",
+      align: "right",
+      render: (_, record) => (
+        <Button
+          type="ghost"
+          shape="round"
+          onClick={() => setSelectedOrder(getOrder(record))}
+        >
+          Podgląd
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div>
       {selectedOrder ? (
         <div>
-          <Button onClick={() => setSelectedOrder(null)}>Powrót</Button>
-          <OrderTemplate order={selectedOrder} />
+          <Button
+            type="link"
+            icon={<LeftOutlined />}
+            onClick={() => setSelectedOrder(null)}
+          >
+            Powrót
+          </Button>
+          <OrderTemplate order={selectedOrder} variant="node" />
         </div>
       ) : (
-        <List
+        <Table
           dataSource={placedOrders}
-          renderItem={(placedOrder) => {
-            const order = JSON.parse(placedOrder.order) as Order;
-            return (
-              <List.Item>
-                {dayjs.unix(order.createdAt).format("DD-MM-YYYY HH:mm")} -{" "}
-                {formatMoney(Money.cents(order.summary.total))}
-                <Button onClick={() => setSelectedOrder(order)}>Podgląd</Button>
-                <a
-                  href={placedOrder.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {placedOrder.url}
-                </a>
-              </List.Item>
-            );
-          }}
+          columns={TableColumns as unknown[]}
+          pagination={false}
+          rowKey={(record) => record.timestamp}
         />
       )}
     </div>

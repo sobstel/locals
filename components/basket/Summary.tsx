@@ -1,5 +1,7 @@
 import React from "react";
 import { Button } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+
 import config from "../../config";
 import { Cart } from "./Cart";
 
@@ -29,15 +31,22 @@ const ClientInfo: React.FC<{ client: Client }> = ({ client }) => (
 export const Summary: React.FC<{
   items: LineItem[];
   client?: Client;
+  isBusy?: boolean;
   onOrder: () => void;
-}> = ({ items, client, onOrder }) => {
+}> = ({ items, client, onOrder, isBusy = false }) => {
   return (
     <div>
       <ClientInfo client={client} />
       <Cart items={items} />
       <div className="tw-my-4 tw-mx-6 tw-flex tw-justify-center">
-        <Button type="primary" shape="round" onClick={() => onOrder()}>
-          Zamów
+        <Button
+          type="primary"
+          shape="round"
+          onClick={() => onOrder()}
+          disabled={isBusy}
+          icon={isBusy ? <LoadingOutlined /> : null}
+        >
+          {isBusy ? "Wysyłanie" : "Zamów"}
         </Button>
       </div>
     </div>

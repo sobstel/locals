@@ -1,11 +1,24 @@
+import fs from "fs";
+import path from "path";
+import os from "os";
+import crypto from "crypto";
 import dayjs from "dayjs";
 import cuid from "cuid";
 import aws from "aws-sdk";
+
 import { NowRequest, NowResponse } from "@now/node";
 import config from "../../config";
 import { mbSendEmail } from "../../utils/email";
+import { getPDF } from "../../utils/screenshot";
 
 const Bucket = "locals-orders-store";
+
+function tmpFile(ext: string) {
+  return path.join(
+    os.tmpdir(),
+    `archive.${crypto.randomBytes(6).readUIntLE(0, 6).toString(36)}.${ext}`
+  );
+}
 
 export default async (req: NowRequest, res: NowResponse) => {
   if (req.method !== "POST") {
@@ -20,17 +33,46 @@ export default async (req: NowRequest, res: NowResponse) => {
   const prefix = config.id;
 
   if (process.env.MAILER === "MG") {
-    const r = await mbSendEmail(
-      config.email,
-      `[${prefix}] Zamówienie nr ${orderNumber}`,
-      orderHtml,
-      `${client.firstname} ${client.lastname}`,
-      client.email
-    );
-    if (r) {
+    let attachmentPath: string;
+
+    // move pdf to a feature flag ! in general make attachment sending a feature
+    let fallbackToHtml = false;
+    try {
+      attachmentPath = tmpFile("pdf");
+      const pdf = await getPDF(orderHtml);
+      fs.writeFileSync(attachmentPath, pdf);
+    } catch (e) {
+      console.warn(e);
+      fallbackToHtml = true;
+    }
+
+    if (fallbackToHtml) {
+      attachmentPath = tmpFile("html");
+      fs.writeFileSync(attachmentPath, orderHtml);
+    }
+
+    const sendOrderEmail = async (email: string) =>
+      await mbSendEmail(
+        email,
+        `[${prefix}] Zamówienie nr ${orderNumber}`,
+        orderHtml,
+        `${client.firstname} ${client.lastname}`,
+        client.email,
+        attachmentPath
+      );
+
+    const response = await sendOrderEmail(config.email);
+    if (response) {
+      if (client.email) {
+        try {
+          await sendOrderEmail(client.email);
+        } catch (e) {
+          /** noop */
+        }
+      }
       res.json({
         done: true,
-        id: r.id,
+        id: response.id,
       });
     } else {
       res.status(400);
