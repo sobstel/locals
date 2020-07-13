@@ -17,7 +17,7 @@ export default function Basket() {
     (state: any) => state.orders.items
   ) as PlacedOrder[];
   placedOrders = (placedOrders ?? []).sort(
-    (order1, order2) => order1.timestamp - order2.timestamp
+    (order1, order2) => order2.timestamp - order1.timestamp
   );
 
   const TableColumns = [
