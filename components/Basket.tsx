@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Typography, Row, Col } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -24,6 +25,7 @@ export default function Basket() {
     (state: any) => state.basket.items
   ) as LineItem[];
 
+  const [isBusy, setIsBusy] = useState(false);
   const [stepIndex, setStepIndex] = useState(OrderStep.basket);
   const [client, setClient] = useState<Client>(lastClient);
 
@@ -43,15 +45,20 @@ export default function Basket() {
 
   const currentStep = Steps[stepIndex];
 
-  const onBackClick = () => setStepIndex(stepIndex - 1);
+  const onBackClick = () => {
+    setStepIndex(stepIndex - 1);
+  };
+
   const onNextClick = () => {
     if (currentStep.onLeave) {
       currentStep.onLeave();
     }
     setStepIndex(stepIndex + 1);
   };
+
   const onOrder = () => {
     dispatch({ type: "CREATE_ORDER", brandId: config.id, client });
+    setIsBusy(true);
   };
 
   const canGoBack = stepIndex == OrderStep.form;
@@ -101,10 +108,11 @@ export default function Basket() {
           <Button
             type={enableNextButton ? "primary" : "default"}
             shape="round"
-            disabled={!enableNextButton}
+            disabled={isBusy || !enableNextButton}
             onClick={onNextClick}
+            icon={isBusy ? <LoadingOutlined /> : null}
           >
-            Zamów
+            {isBusy ? "Wysyłanie" : "Zamów"}
           </Button>
         </div>
       )}

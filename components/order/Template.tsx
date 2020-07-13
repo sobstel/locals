@@ -1,14 +1,15 @@
 import React from "react";
 import { OrderPrinter } from "./Printer";
 
-function getDefaultStyling() {
-  return `
-    // @media (min-width: 1000px) {
-    //     .invoice-wrap {
-    //         max-width: 600px;
-    //     }
-    // }
+const BodyStyling = `
+    @media (min-width: 1000px) {
+        .invoice-wrap {
+            max-width: 600px;
+        }
+    }
+`;
 
+const DefaultStyling = `
     .invoice-box {
         margin: auto;
         padding: 30px;
@@ -106,17 +107,44 @@ function getDefaultStyling() {
     .rtl table tr td:nth-child(2) {
         text-align: left;
     }
-    `;
-}
+`;
 
-export class OrderTemplate extends React.PureComponent<{ order: Order }> {
+type Props = {
+  order: Order;
+  variant: "html" | "node";
+};
+
+export class OrderTemplate extends React.PureComponent<Props> {
+  static defaultProps: Partial<Props> = {
+    variant: "html",
+  };
+
   render() {
-    const { order, ...otherProps } = this.props;
-    return (
-      <div {...otherProps}>
-        <OrderPrinter order={order} />
-        <style>{getDefaultStyling()}</style>
-      </div>
-    );
+    const { order, variant, ...otherProps } = this.props;
+    switch (variant) {
+      case "html":
+        return (
+          <html>
+            <head>
+              <meta charSet="utf-8" />
+              <title>Zamowienie {order.number}</title>
+              <style>{BodyStyling}</style>
+              <style>{DefaultStyling}</style>
+            </head>
+            <body>
+              <OrderPrinter order={order} />
+            </body>
+          </html>
+        );
+      case "node":
+        return (
+          <div {...otherProps}>
+            <OrderPrinter order={order} />
+            <style>{DefaultStyling}</style>
+          </div>
+        );
+      default:
+        return null;
+    }
   }
 }

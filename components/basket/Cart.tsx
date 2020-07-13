@@ -9,7 +9,7 @@ type TableDataItem = LineItem & {
 
 const TableColumns = [
   {
-    title: "Product",
+    title: "Produkt",
     dataIndex: "name",
     key: "$name",
   },
