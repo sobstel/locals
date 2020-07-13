@@ -23,7 +23,7 @@ function* createOrder(action) {
   );
 
   const order = {
-    number: dayjs().format("M/DDHHmm/ss"),
+    number: dayjs().format("DDMM/HHmmss"),
     createdAt: dayjs().unix(),
     brand: { id: config.id, name: config.name },
     client: action.client,
