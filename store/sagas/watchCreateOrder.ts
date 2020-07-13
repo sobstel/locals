@@ -48,7 +48,7 @@ function* createOrder(action) {
 
   yield put({
     type: "ORDER_CREATED",
-    order: { url, timestamp: Date.now(), order: JSON.stringify(order) },
+    order: { url, timestamp: dayjs().unix(), order: JSON.stringify(order) },
   });
 
   yield put({ type: "CLEAR_BASKET" });
