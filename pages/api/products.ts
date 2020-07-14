@@ -18,7 +18,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     rows,
     R.reduce((acc, row) => {
       const isGroupHeader = row.length === 1;
-      const isProduct = row[1] && row[1].trim().match(/^\d+[,.]\d+$/);
+      const isProduct = row[1] && row[1].trim().match(/^\d+([,.]\d+)?$/);
 
       if (isGroupHeader) {
         acc.push({ name: row[0], products: [] });
