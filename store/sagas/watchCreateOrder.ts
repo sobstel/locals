@@ -37,7 +37,6 @@ function* createOrder(action) {
   const orderHtml = ReactDOMServer.renderToStaticMarkup(
     React.createElement(OrderTemplate, { order, variant: "html" })
   );
-  console.log(orderHtml);
 
   const { url } = yield axios
     .post(`/api/order`, {
