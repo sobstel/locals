@@ -65,24 +65,18 @@ export default function Basket() {
   const enableNextButton =
     !isEmpty && (currentStep.canProceed || (() => true))();
 
-  // NOTE: no idea why but I don't care 🖕🏻
-  const FUFlex = [
-    [2, 3, 1],
-    [2, 3, 2],
-    [1, 3, 2],
-  ];
   return (
     <div>
-      <Row className="tw-py-2 tw-text-center" align="middle">
-        <Col flex={FUFlex[stepIndex][0]}>
+      <Row className="tw-relative tw-py-2 tw-text-center" align="middle">
+        <Col flex={1} className="tw-text-left tw-pl-5">
           <Text type="secondary">
             {stepIndex > 0 && Steps[stepIndex - 1].name}
           </Text>
         </Col>
-        <Col flex={FUFlex[stepIndex][1]}>
+        <div className="tw-absolute tw-w-full tw-h-full">
           <Text className="tw-text-xl"> {currentStep.name}</Text>
-        </Col>
-        <Col flex={FUFlex[stepIndex][2]}>
+        </div>
+        <Col flex={1} className="tw-text-right tw-pr-5">
           <Text type="secondary">
             {stepIndex < Steps.length - 1 && Steps[stepIndex + 1].name}
           </Text>

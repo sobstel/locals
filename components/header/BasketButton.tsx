@@ -1,17 +1,21 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
+import Money from "../../utils/cents";
+import { formatMoney } from "../../utils/accounting";
+
 export default function BasketButton(props: React.PropsWithChildren<{}>) {
   const totalPrice = useSelector((state: any) =>
     state.basket.items.reduce(
-      (accum, item) => accum + item.count * item.price,
-      0
+      (accum: Money, item: LineItem) =>
+        accum.add(Money.cents(item.price).times(item.count)),
+      Money.cents(0)
     )
   );
 
   return (
     <div {...props}>
-      {props.children} ({totalPrice.toFixed(2)} zł)
+      {props.children} ({formatMoney(totalPrice)})
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import * as R from "remeda";
 import { NowRequest, NowResponse } from "@now/node";
 import { google } from "googleapis";
+import Money from "../../utils/cents";
 import config from "../../config";
 
 // TODO: catch error
@@ -28,7 +29,7 @@ export default async (req: NowRequest, res: NowResponse) => {
         const group = R.last(acc);
         if (group) {
           const name = row[0].trim();
-          const price = parseFloat(row[1].trim().replace(",", "."));
+          const price = Money.fromAmount(row[1].trim().replace(",", ".")).cents;
           group.products.push({ name, price });
         }
       }

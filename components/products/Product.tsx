@@ -28,7 +28,7 @@ export default function Product(props: {
   });
 
   const inBasket = lineItem != null;
-  const priceMoney = Money.cents(product.price.toFixed(2));
+  const priceMoney = Money.cents(product.price);
 
   if (!priceMoney) {
     return null;

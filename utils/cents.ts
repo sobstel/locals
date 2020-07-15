@@ -33,10 +33,6 @@ const parseFloat = Number.parseFloat;
 const isNumber = (value: any) =>
   typeof value === "number" && Number.isFinite(value) && !Number.isNaN(value);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isInteger = (value: any) =>
-  isNumber(value) && Number.isSafeInteger(value);
-
 let settings = Object.assign({}, defaults);
 
 /**
@@ -51,22 +47,13 @@ class Money {
   readonly cents: number;
 
   constructor(value?: Money | string | number) {
-    this.cents = 0;
-    if (value) {
-      if (value instanceof Money) {
-        this.cents = value.value;
-      } else if (!isInteger(value)) {
-        this.cents = toCents(value);
-      } else {
-        this.cents = value as number;
-      }
-    }
+    this.cents = asCents(value);
   }
 
   /**
    * Returns value in cents
    */
-  get value(): number {
+  get amount(): number {
     return parseFloat(this.toString());
   }
 
@@ -209,21 +196,35 @@ class Money {
    */
   toString() {
     const precision = Money.settings.precision;
-    return floatToAmount(this.cents / pow10(precision));
+    return floatToAmountStr(this.cents / pow10(precision));
   }
 
   /**
-   * Alias for `toString` precision is ignored
+   * Alias for `toString`
    */
   toFixed() {
     return this.toString();
   }
 
   /**
+   * Alias for `value`
+   */
+  toFloat() {
+    return this.amount;
+  }
+
+  /**
+   * Alias for `amount`
+   */
+  toAmount() {
+    return this.amount;
+  }
+
+  /**
    * @returns {Money}
    */
   clone(): Money {
-    return Money.from(this);
+    return Money.fromAmount(this);
   }
 
   /**
@@ -231,13 +232,20 @@ class Money {
    * @returns {boolean}
    */
   static cents(value: Money | string | number) {
-    return new Money(value);
+    return new Money(asCents(value));
   }
 
   /**
    * New value from numeric value
    */
-  static from(value: Money | string | number) {
+  static fromAmount(value: Money | string | number) {
+    return new Money(toCents(value));
+  }
+
+  /**
+   * Alias for `fromAmount`
+   */
+  static amount(value: Money | string | number) {
     return new Money(toCents(value));
   }
 
@@ -267,7 +275,7 @@ function toNumber(value: ThingThatLooksLikeNumbr) {
     : parseFloat(typeof value === "string" ? value : value.toString());
 }
 /**
- * Converts numeric value to decimal
+ * Converts amount value to cents
  * @param {number|Money} value
  */
 function toCents(value: ThingThatLooksLikeMoneeeeey) {
@@ -275,19 +283,13 @@ function toCents(value: ThingThatLooksLikeMoneeeeey) {
     return value.cents;
   }
 
-  const { decimal, errorOnInvalid, precision } = settings;
+  const { errorOnInvalid, precision } = settings;
 
   let v = 0;
   if (isNumber(value)) {
     v = value as number;
   } else if (typeof value === "string") {
-    const regex = new RegExp("[^-\\d" + decimal + "]", "g"),
-      decimalString = new RegExp("\\" + decimal, "g");
-    const clearedValue = value
-      .replace(/\((.*)\)/, "-$1") // allow negative e.g. (1.99)
-      .replace(regex, "") // replace any non numeric values
-      .replace(decimalString, "."); // convert any decimal values // scale number to integer value
-    v = (clearedValue || 0) as number;
+    v = parseAmount(value as string);
   } else {
     if (errorOnInvalid) {
       throw Error("Invalid Input");
@@ -296,6 +298,47 @@ function toCents(value: ThingThatLooksLikeMoneeeeey) {
   }
 
   return centsWithPrecision(v, precision);
+}
+
+/**
+ * Converts money-like value to cents
+ * For floating-point numbers decimal places are truncated
+ * @param value money-like value
+ */
+function asCents(value: ThingThatLooksLikeMoneeeeey) {
+  if (value instanceof Money) {
+    return value.cents;
+  }
+
+  if (isNumber(value)) {
+    return trunc(value as number);
+  }
+
+  if (typeof value === "string") {
+    return trunc(parseAmount(value as string));
+  }
+
+  const { errorOnInvalid } = settings;
+  if (errorOnInvalid) {
+    throw Error("Invalid Input");
+  }
+
+  return 0;
+}
+
+/**
+ * Parse string as floating point amount
+ * @param value aount string
+ */
+function parseAmount(value: string) {
+  const { decimal } = settings;
+  const regex = new RegExp("[^-\\d" + decimal + "]", "g"),
+    decimalString = new RegExp("\\" + decimal, "g");
+  const clearedValue = value
+    .replace(/\((.*)\)/, "-$1") // allow negative e.g. (1.99)
+    .replace(regex, "") // replace any non numeric values
+    .replace(decimalString, "."); // convert any decimal values // scale number to integer value
+  return (clearedValue || 0) as number;
 }
 
 /**
@@ -314,14 +357,14 @@ function add(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return Money.cents(toCents(lhs) + toCents(rhs));
+  return Money.cents(asCents(lhs) + asCents(rhs));
 }
 
 function subtract(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return Money.cents(toCents(lhs) - toCents(rhs));
+  return Money.cents(asCents(lhs) - asCents(rhs));
 }
 
 // Money - Number
@@ -329,59 +372,59 @@ function multiply(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeNumbr
 ) {
-  return Money.cents(round(toCents(lhs) * toNumber(rhs)));
+  return Money.cents(asCents(lhs) * toNumber(rhs));
 }
 
 function divide(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeNumbr
 ) {
-  return Money.cents(round(toCents(lhs) / toNumber(rhs)));
+  return Money.cents(round(asCents(lhs) / toNumber(rhs)));
 }
 
 function percent(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeNumbr
 ) {
-  return Money.cents(round(toCents(lhs) * (toNumber(rhs) / 100)));
+  return Money.cents(round(asCents(lhs) * (toNumber(rhs) / 100)));
 }
 
 function equal(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return toCents(lhs) == toCents(rhs);
+  return asCents(lhs) == asCents(rhs);
 }
 
 function lessThan(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return toCents(lhs) < toCents(rhs);
+  return asCents(lhs) < asCents(rhs);
 }
 
 function lessThanOrEqual(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return toCents(lhs) <= toCents(rhs);
+  return asCents(lhs) <= asCents(rhs);
 }
 
 function greaterThan(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return toCents(lhs) > toCents(rhs);
+  return asCents(lhs) > asCents(rhs);
 }
 
 function greaterThanOrEqual(
   lhs: ThingThatLooksLikeMoneeeeey,
   rhs: ThingThatLooksLikeMoneeeeey
 ) {
-  return toCents(lhs) >= toCents(rhs);
+  return asCents(lhs) >= asCents(rhs);
 }
 
-function floatToAmount(f: number) {
+function floatToAmountStr(f: number) {
   return ("" + Math.round(f * 100.0) / 100.0)
     .replace(/^-(\d+)$/, "-$1.00") //-xx
     .replace(/^(\d+)$/, "$1.00") //xx

@@ -10,11 +10,11 @@ export function formatMoney(money: number, locale: string): string;
 
 export function formatMoney(money: any, locale = "pl-PL") {
   if (!(money instanceof Money)) {
-    money = Money.cents(money);
+    money = Money.fromAmount(money);
   }
 
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "PLN",
-  }).format(money.toFixed());
+  }).format(money.toAmount());
 }

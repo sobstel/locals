@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+import Money from "../utils/cents";
 import { formatMoney } from "../utils/accounting";
 import { OrderTemplate } from "./order/Template";
 
@@ -48,7 +49,7 @@ export default function Basket() {
       key: "$summary",
       align: "right",
       render: (_, record) => (
-        <div>{formatMoney(getOrder(record).summary.subtotal)}</div>
+        <div>{formatMoney(Money.cents(getOrder(record).summary.subtotal))}</div>
       ),
     },
     {

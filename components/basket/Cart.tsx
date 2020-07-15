@@ -21,7 +21,7 @@ const TableColumns = [
     render: (_, record) => (
       <div>
         <small>{record.count}&nbsp;x&nbsp;</small>
-        {formatMoney(record.price)}
+        {formatMoney(Money.cents(record.price))}
       </div>
     ),
   },
@@ -46,7 +46,7 @@ const TableSummary: React.FC<{ data: TableDataItem[] }> = ({ data }) => {
     <tr key="footer">
       <th>Podsumowanie</th>
       <td className="tw-text-right">
-        <Text strong>{formatMoney(sum.total)}</Text>
+        <Text strong>{formatMoney(Money.cents(sum.total))}</Text>
       </td>
     </tr>
   );
