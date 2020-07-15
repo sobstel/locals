@@ -17,7 +17,7 @@ export default function Basket() {
   let placedOrders = useSelector(
     (state: any) => state.orders.items
   ) as PlacedOrder[];
-  placedOrders = (placedOrders ?? []).sort(
+  placedOrders = [...(placedOrders || [])].sort(
     (order1, order2) => order2.timestamp - order1.timestamp
   );
 
