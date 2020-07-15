@@ -16,7 +16,7 @@ const Bucket = "locals-orders-store";
 function tmpFile(ext: string) {
   return path.join(
     os.tmpdir(),
-    `archive.${crypto.randomBytes(6).readUIntLE(0, 6).toString(36)}.${ext}`
+    `zamowienie.${crypto.randomBytes(6).readUIntLE(0, 6).toString(36)}.${ext}`
   );
 }
 
@@ -35,15 +35,16 @@ export default async (req: NowRequest, res: NowResponse) => {
   if (process.env.MAILER === "MG") {
     let attachmentPath: string;
 
-    // move pdf to a feature flag ! in general make attachment sending a feature
-    let fallbackToHtml = false;
-    try {
-      attachmentPath = tmpFile("pdf");
-      const pdf = await getPDF(orderHtml);
-      fs.writeFileSync(attachmentPath, pdf);
-    } catch (e) {
-      console.warn(e);
-      fallbackToHtml = true;
+    let fallbackToHtml = !config.generatePdf;
+    if (!fallbackToHtml) {
+      try {
+        attachmentPath = tmpFile("pdf");
+        const pdf = await getPDF(orderHtml);
+        fs.writeFileSync(attachmentPath, pdf);
+      } catch (e) {
+        console.warn(e);
+        fallbackToHtml = true;
+      }
     }
 
     if (fallbackToHtml) {
@@ -63,7 +64,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 
     const response = await sendOrderEmail(config.email);
     if (response) {
-      if (client.email) {
+      if (client.email && config.emailCustomer) {
         try {
           await sendOrderEmail(client.email);
         } catch (e) {

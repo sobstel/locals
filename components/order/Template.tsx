@@ -16,7 +16,7 @@ const DefaultStyling = `
         border: none;
         font-size: 16px;
         line-height: 24px;
-        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
         color: #555;
     }
 
@@ -64,11 +64,11 @@ const DefaultStyling = `
         border-bottom: none;
     }
 
-    .invoice-box table tr.total > td:nth-child(2) {
+    .invoice-box table tr.total \> td:nth-child(2) {
         border-top: 2px solid #eee;
     }
 
-    .invoice-box table tr.total > td:nth-child(2) td:first-child {
+    .invoice-box table tr.total \> td:nth-child(2) td:first-child {
         text-align: right;
     }
 
@@ -97,7 +97,7 @@ const DefaultStyling = `
     /** RTL **/
     .rtl {
         direction: rtl;
-        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        font-family: Tahoma, "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
     }
 
     .rtl table {
@@ -124,12 +124,13 @@ export class OrderTemplate extends React.PureComponent<Props> {
     switch (variant) {
       case "html":
         return (
+          // `dangerouslySetInnerHTML` is required to skip internal string sanitization in `renderToStaticMarkup`
           <html>
             <head>
               <meta charSet="utf-8" />
               <title>Zamowienie {order.number}</title>
-              <style>{BodyStyling}</style>
-              <style>{DefaultStyling}</style>
+              <style dangerouslySetInnerHTML={{ __html: BodyStyling }} />
+              <style dangerouslySetInnerHTML={{ __html: DefaultStyling }} />
             </head>
             <body>
               <OrderPrinter order={order} />
