@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Layout, Menu } from "antd";
+import { Alert, Layout, Menu } from "antd";
 import config from "../config";
 
 import Products from "../components/Products";
@@ -19,6 +19,7 @@ export default function App() {
     ({ key }) => dispatch({ type: "NAVIGATE_TO", menuItemKey: key }),
     [dispatch]
   );
+  const error = useSelector((state: any) => state.core.error);
 
   const MENU_ITEMS = {
     products: {
@@ -63,7 +64,10 @@ export default function App() {
           })}
         </Menu>
       </Header>
-      <Content>{ActiveComponent && <ActiveComponent />}</Content>
+      <Content>
+        {error && <Alert message={error} type="error" closable />}
+        {ActiveComponent && <ActiveComponent />}
+      </Content>
     </Layout>
   );
 }

@@ -38,13 +38,18 @@ function* createOrder(action) {
     React.createElement(OrderTemplate, { order, variant: "html" })
   );
 
-  const { url } = yield axios
-    .post(`/api/order`, {
+  let url;
+  try {
+    const response = yield axios.post(`/api/order`, {
       client: action.client,
       orderHtml: orderHtml,
       orderNumber: order.number,
-    })
-    .then((response) => response.data);
+    });
+    url = response.data.url;
+  } catch (e) {
+    yield put({ type: "SET_ERROR", message: "Zamówienie nie zostało wysłane" });
+    return;
+  }
 
   yield put({
     type: "ORDER_CREATED",

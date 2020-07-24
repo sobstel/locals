@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Collapse, List } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import config from "../config";
 import Loading from "./shared/Loading";
 import Product from "./products/Product";
 
