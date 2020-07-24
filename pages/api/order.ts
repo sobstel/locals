@@ -63,7 +63,6 @@ export default async (req: NowRequest, res: NowResponse) => {
         attachmentPath
       );
     } catch (e) {
-      // TODO: catch error
       res.status(400);
       res.json({ done: false });
       return;
