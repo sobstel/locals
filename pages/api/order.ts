@@ -52,33 +52,40 @@ export default async (req: NowRequest, res: NowResponse) => {
       fs.writeFileSync(attachmentPath, orderHtml);
     }
 
-    const sendOrderEmail = async (email: string) =>
+    try {
+      // mail from a customer to a store
       await mbSendEmail(
-        email,
+        config.email,
         `[${prefix}] Zamówienie nr ${orderNumber}`,
         orderHtml,
         `${client.firstname} ${client.lastname}`,
         client.email,
         attachmentPath
       );
-
-    const response = await sendOrderEmail(config.email);
-    if (response) {
-      if (client.email && config.emailCustomer) {
-        try {
-          await sendOrderEmail(client.email);
-        } catch (e) {
-          /** noop */
-        }
-      }
-      res.json({
-        done: true,
-        id: response.id,
-      });
-    } else {
+    } catch (e) {
+      // TODO: catch error
       res.status(400);
       res.json({ done: false });
+      return;
     }
+
+    if (client.email && config.emailCustomer) {
+      try {
+        // mail from a store to a customer
+        await mbSendEmail(
+          client.email,
+          `Zamówienie nr ${orderNumber}`,
+          orderHtml,
+          config.name,
+          config.email,
+          attachmentPath
+        );
+      } catch (e) {
+        /** noop */
+      }
+    }
+
+    res.json({ done: true });
     return;
   }
 
