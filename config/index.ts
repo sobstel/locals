@@ -1,7 +1,7 @@
 import defaultConfig from "./defaultConfig";
 import brandConfigs from "./brandConfigs";
 
-const id = 'niebanalna'; / /process.env.ID;
+const id = 'niebanalna'; // process.env.ID;
 const brandConfig = brandConfigs.find((config) => config.id === id) || {};
 
 let localConfig;
